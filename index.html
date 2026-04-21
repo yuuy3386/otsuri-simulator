@@ -103,13 +103,12 @@ function render(){
   // 注文集計
   // ------------------
   let count = {};
-
   items.forEach(i=>{
-    count[i.name] = (count[i.name] || 0) + 1;
+    count[i.name] = (count[i.name]||0)+1;
   });
 
   // ------------------
-  // 注文内容（そのまま表示）
+  // 注文内容（絶対そのまま）
   // ------------------
   let orderHTML = "";
 
@@ -120,14 +119,15 @@ function render(){
   document.getElementById("order").innerHTML =
     orderHTML || "なし";
 
-  // ------------------
-  // セット提案
-  // ------------------
-  let suggestions = [];
 
-  // お得セット（最優先）
+  // ------------------
+  // セット提案（変換しない）
+  // ------------------
+  let suggestList = [];
+
+  // お得セット
   if((count["ビーフ"]||0)>=3 && (count["メンチ"]||0)>=2){
-    suggestions.push("お得セット（1400円）にできます");
+    suggestList.push("お得セット（1400円）にできます");
   }
 
   // 4点セット
@@ -137,7 +137,7 @@ function render(){
     (count["牛すじ"]||0)>=1 &&
     (count["明太クリーミー"]||0)>=1
   ){
-    suggestions.push("4点セット（1200円）にできます");
+    suggestList.push("4点セット（1200円）にできます");
   }
 
   // 3点セット
@@ -146,7 +146,7 @@ function render(){
     (count["メンチ"]||0)>=1 &&
     (count["牛すじ"]||0)>=1
   ){
-    suggestions.push("3点セット（900円）にできます");
+    suggestList.push("3点セット（900円）にできます");
   }
 
   // お土産セット
@@ -155,17 +155,17 @@ function render(){
     (count["和風だし"]||0)>=1 &&
     (count["常総牛"]||0)>=1
   ){
-    suggestions.push("お土産セット（1000円）にできます");
+    suggestList.push("お土産セット（1000円）にできます");
   }
 
   document.getElementById("suggest").innerHTML =
-    suggestions.length ? suggestions.join("<br>") : "（該当なし）";
+    suggestList.length ? suggestList.join("<br>") : "（該当なし）";
+
 
   // ------------------
   // 合計（単品のまま）
   // ------------------
   let total = 0;
-
   items.forEach(i=>{
     total += i.price;
   });
