@@ -5,11 +5,38 @@
 <title>お釣り＆セット提案ツール</title>
 
 <style>
-body { font-family: sans-serif; padding:20px; }
-.grid { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; }
-button { padding:15px; border-radius:10px; border:1px solid #ccc; }
-.section { margin-top:30px; }
-.total { font-size:28px; font-weight:bold; }
+body {
+  font-family: sans-serif;
+  padding:20px;
+}
+
+h1 {
+  font-size:28px;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+  gap:10px;
+  margin-bottom:20px;
+}
+
+button {
+  padding:15px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  background:#f5f5f5;
+  cursor:pointer;
+}
+
+.section {
+  margin-top:30px;
+}
+
+.total {
+  font-size:32px;
+  font-weight:bold;
+}
 </style>
 </head>
 
@@ -17,8 +44,10 @@ button { padding:15px; border-radius:10px; border:1px solid #ccc; }
 
 <h1>キッチンカー向け｜お釣り計算＆セット提案ツール</h1>
 
+<!-- 商品 -->
 <div class="section">
-<h2>商品</h2>
+<h2>商品を選択</h2>
+
 <div class="grid">
 <button onclick="addItem('ビーフ',230)">ビーフ 230円</button>
 <button onclick="addItem('メンチ',380)">メンチ 380円</button>
@@ -34,26 +63,19 @@ button { padding:15px; border-radius:10px; border:1px solid #ccc; }
 </div>
 </div>
 
-<div class="section">
-<h2>セットメニュー</h2>
-<div class="grid">
-<button onclick="addManualSet('3点セット',900)">3点セット</button>
-<button onclick="addManualSet('4点セット',1200)">4点セット</button>
-<button onclick="addManualSet('お得セット',1400)">お得セット</button>
-<button onclick="addManualSet('お土産セット',1000)">お土産セット</button>
-</div>
-</div>
-
+<!-- 注文内容 -->
 <div class="section">
 <h2>注文内容</h2>
-<div id="order"></div>
+<div id="order">なし</div>
 </div>
 
+<!-- セット提案 -->
 <div class="section">
 <h2>セット提案</h2>
-<div id="suggest"></div>
+<div id="suggest">（該当なし）</div>
 </div>
 
+<!-- 合計 -->
 <div class="section">
 <h2>合計</h2>
 <div id="total" class="total">0円</div>
@@ -64,132 +86,91 @@ button { padding:15px; border-radius:10px; border:1px solid #ccc; }
 <script>
 
 let items = [];
-let manualSets = [];
 
-function normalize(name){
-  return name.trim();
-}
-
-function addItem(name,price){
-  items.push({name:normalize(name),price});
-  render();
-}
-
-function addManualSet(name,price){
-  manualSets.push({name,price});
+function addItem(name, price){
+  items.push({name, price});
   render();
 }
 
 function resetAll(){
-  items=[];
-  manualSets=[];
+  items = [];
   render();
 }
 
 function render(){
 
+  // ------------------
+  // 注文集計
+  // ------------------
   let count = {};
 
   items.forEach(i=>{
-    count[i.name] = (count[i.name]||0)+1;
+    count[i.name] = (count[i.name] || 0) + 1;
   });
 
-  let setList = [];
-  let setTotal = 0;
+  // ------------------
+  // 注文内容（そのまま表示）
+  // ------------------
+  let orderHTML = "";
 
-  // ★優先順（重要）
-  // 4点 → お得 → お土産 → 3点
+  for(let name in count){
+    orderHTML += `${name} ×${count[name]}<br>`;
+  }
+
+  document.getElementById("order").innerHTML =
+    orderHTML || "なし";
+
+  // ------------------
+  // セット提案
+  // ------------------
+  let suggestions = [];
+
+  // お得セット（最優先）
+  if((count["ビーフ"]||0)>=3 && (count["メンチ"]||0)>=2){
+    suggestions.push("お得セット（1400円）にできます");
+  }
 
   // 4点セット
-  while(
+  if(
     (count["ビーフ"]||0)>=1 &&
     (count["メンチ"]||0)>=1 &&
     (count["牛すじ"]||0)>=1 &&
     (count["明太クリーミー"]||0)>=1
   ){
-    setList.push("4点セット");
-    setTotal += 1200;
-
-    count["ビーフ"]--;
-    count["メンチ"]--;
-    count["牛すじ"]--;
-    count["明太クリーミー"]--;
-  }
-
-  // お得セット（ビーフ×3 メンチ×2）
-  while(
-    (count["ビーフ"]||0)>=3 &&
-    (count["メンチ"]||0)>=2
-  ){
-    setList.push("お得セット");
-    setTotal += 1400;
-
-    count["ビーフ"]-=3;
-    count["メンチ"]-=2;
-  }
-
-  // お土産セット（ビーフ・和風・常総牛）
-  while(
-    (count["ビーフ"]||0)>=1 &&
-    (count["和風だし"]||0)>=1 &&
-    (count["常総牛"]||0)>=1
-  ){
-    setList.push("お土産セット");
-    setTotal += 1000;
-
-    count["ビーフ"]--;
-    count["和風だし"]--;
-    count["常総牛"]--;
+    suggestions.push("4点セット（1200円）にできます");
   }
 
   // 3点セット
-  while(
+  if(
     (count["ビーフ"]||0)>=1 &&
     (count["メンチ"]||0)>=1 &&
     (count["牛すじ"]||0)>=1
   ){
-    setList.push("3点セット");
-    setTotal += 900;
-
-    count["ビーフ"]--;
-    count["メンチ"]--;
-    count["牛すじ"]--;
+    suggestions.push("3点セット（900円）にできます");
   }
 
-  // 手動セット
-  manualSets.forEach(s=>{
-    setList.push(s.name);
-    setTotal += s.price;
-  });
-
-  // 単品計算
-  let singleTotal = 0;
-  let singleText = "";
-
-  for(let name in count){
-    if(count[name]>0){
-      let price = items.find(i=>i.name===name).price;
-      singleTotal += price * count[name];
-      singleText += `${name} ×${count[name]}<br>`;
-    }
+  // お土産セット
+  if(
+    (count["ビーフ"]||0)>=1 &&
+    (count["和風だし"]||0)>=1 &&
+    (count["常総牛"]||0)>=1
+  ){
+    suggestions.push("お土産セット（1000円）にできます");
   }
-
-  // 表示
-  let html = "";
-
-  html += "【セット】<br>";
-  setList.forEach(s=> html += s + "<br>");
-
-  html += "<br>【単品】<br>";
-  html += singleText || "なし";
-
-  document.getElementById("order").innerHTML = html;
 
   document.getElementById("suggest").innerHTML =
-    setList.length ? "セット適用されています" : "（該当なし）";
+    suggestions.length ? suggestions.join("<br>") : "（該当なし）";
 
-  document.getElementById("total").innerText =
-    (setTotal + singleTotal) + "円";
+  // ------------------
+  // 合計（単品のまま）
+  // ------------------
+  let total = 0;
+
+  items.forEach(i=>{
+    total += i.price;
+  });
+
+  document.getElementById("total").innerText = total + "円";
 }
 
 </script>
