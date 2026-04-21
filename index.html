@@ -1,11 +1,110 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>お釣り計算＆セット提案ツール</title>
+<meta charset="UTF-8">
+<title>お釣り計算＆セット提案ツール</title>
+
+<style>
+body {
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+.container {
+  max-width: 600px;
+}
+
+button {
+  margin: 5px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.result {
+  margin-top: 20px;
+  font-size: 18px;
+}
+</style>
 </head>
+
 <body>
-  <h1>キッチンカー向け｜お釣り計算＆セット提案ツール</h1>
-  <p>デモ準備中（動作確認用ページ）</p>
+
+<div class="container">
+
+<h1>キッチンカー向け｜お釣り計算＆セット提案ツール</h1>
+<p>商品を選択してください（複数選択可）</p>
+
+<h2>商品</h2>
+
+<button onclick="addItem('ビーフ',230)">ビーフ 230円</button>
+<button onclick="addItem('メンチ',380)">メンチ 380円</button>
+<button onclick="addItem('牛すじ',300)">牛すじ 300円</button>
+<button onclick="addItem('和風だし',180)">和風だし 180円</button>
+<button onclick="addItem('明太クリーミー',300)">明太クリーミー 300円</button>
+<button onclick="addItem('チーズ',300)">チーズ 300円</button>
+<button onclick="addItem('かにクリーム',300)">かにクリーム 300円</button>
+<button onclick="addItem('かぼちゃ',270)">かぼちゃ 270円</button>
+<button onclick="addItem('常総牛',630)">常総牛 630円</button>
+
+<div class="result">
+<h2>注文内容</h2>
+<p id="list"></p>
+
+<h2>セット提案</h2>
+<p id="set"></p>
+
+<h2>合計</h2>
+<p id="total">0円</p>
+
+<button onclick="reset()">リセット</button>
+</div>
+
+</div>
+
+<script>
+let items = [];
+
+function addItem(name, price){
+  items.push({name, price});
+  update();
+}
+
+function update(){
+  let total = 0;
+  let text = "";
+
+  items.forEach(i => {
+    total += i.price;
+    text += i.name + " ";
+  });
+
+  document.getElementById("list").innerText = text;
+
+  // セット判定
+  let setText = "";
+  if(items.length >= 4){
+    setText = "4点セット（1200円）がおすすめ";
+  } else if(items.length >= 3){
+    setText = "3点セット（900円）がおすすめ";
+  } else {
+    setText = "単品購入";
+  }
+
+  document.getElementById("set").innerText = setText;
+  document.getElementById("total").innerText = total + "円";
+}
+
+function reset(){
+  items = [];
+  update();
+}
+</script>
+
 </body>
 </html>
