@@ -10,25 +10,31 @@ body {
   padding: 20px;
 }
 
-h1 {
-  font-size: 28px;
+.container {
+  max-width: 700px;
 }
 
-.container {
-  max-width: 600px;
+/* 商品3列 */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 
 button {
-  margin: 5px;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 10px;
   border: 1px solid #ccc;
   cursor: pointer;
 }
 
+.section {
+  margin-top: 30px;
+}
+
 .result {
-  margin-top: 20px;
-  font-size: 18px;
+  margin-top: 10px;
+  line-height: 1.8;
 }
 </style>
 </head>
@@ -40,8 +46,10 @@ button {
 <h1>キッチンカー向け｜お釣り計算＆セット提案ツール</h1>
 <p>商品を選択してください（複数選択可）</p>
 
+<div class="section">
 <h2>商品</h2>
 
+<div class="grid">
 <button onclick="addItem('ビーフ',230)">ビーフ 230円</button>
 <button onclick="addItem('メンチ',380)">メンチ 380円</button>
 <button onclick="addItem('牛すじ',300)">牛すじ 300円</button>
@@ -51,19 +59,30 @@ button {
 <button onclick="addItem('かにクリーム',300)">かにクリーム 300円</button>
 <button onclick="addItem('かぼちゃ',270)">かぼちゃ 270円</button>
 <button onclick="addItem('常総牛',630)">常総牛 630円</button>
+</div>
+</div>
 
-<div class="result">
+<div class="section">
+<h2>セットメニュー</h2>
+<p>3点セット 900円 / 4点セット 1200円 / お得セット 1400円</p>
+</div>
+
+<div class="section">
 <h2>注文内容</h2>
-<p id="list"></p>
+<div id="order" class="result"></div>
+</div>
 
+<div class="section">
 <h2>セット提案</h2>
-<p id="set"></p>
+<div id="set" class="result"></div>
+</div>
 
+<div class="section">
 <h2>合計</h2>
-<p id="total">0円</p>
+<div id="total">0円</div>
+</div>
 
 <button onclick="reset()">リセット</button>
-</div>
 
 </div>
 
@@ -77,25 +96,35 @@ function addItem(name, price){
 
 function update(){
   let total = 0;
-  let text = "";
+  let count = items.length;
 
-  items.forEach(i => {
-    total += i.price;
-    text += i.name + " ";
-  });
-
-  document.getElementById("list").innerText = text;
+  items.forEach(i => total += i.price);
 
   // セット判定
+  let setCount = Math.floor(count / 3);
+  let singleCount = count % 3;
+
   let setText = "";
-  if(items.length >= 4){
-    setText = "4点セット（1200円）がおすすめ";
-  } else if(items.length >= 3){
-    setText = "3点セット（900円）がおすすめ";
-  } else {
+  let orderText = "";
+
+  if(setCount > 0){
+    setText = "3点セット × " + setCount;
+    orderText += "🎁 セット<br>";
+    orderText += "3点セット × " + setCount + "<br><br>";
+  }
+
+  if(singleCount > 0){
+    orderText += "単品<br>";
+    for(let i = count - singleCount; i < count; i++){
+      orderText += items[i].name + "<br>";
+    }
+  }
+
+  if(setCount === 0){
     setText = "単品購入";
   }
 
+  document.getElementById("order").innerHTML = orderText;
   document.getElementById("set").innerText = setText;
   document.getElementById("total").innerText = total + "円";
 }
