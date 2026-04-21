@@ -10,63 +10,77 @@ body {
   padding: 20px;
 }
 
-/* 商品3列 */
-.products {
+/* 商品・セット共通で3列 */
+.grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  gap: 12px;
 }
 
 button {
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid #ccc;
   background: #f5f5f5;
   cursor: pointer;
 }
 
 .section {
-  margin-top: 30px;
+  margin-top: 25px;
 }
 
 .result {
+  line-height: 1.8;
   margin-top: 10px;
-  line-height: 2;
 }
 </style>
 </head>
 
 <body>
 
-<h1>商品を選択</h1>
+<h1>キッチンカー向け｜お釣り＆セット提案ツール</h1>
+<p>商品を選択してください（複数選択可）</p>
 
-<div class="products">
-<button onclick="add('ビーフ',230)">ビーフ 230円</button>
-<button onclick="add('メンチ',380)">メンチ 380円</button>
-<button onclick="add('牛すじ',300)">牛すじ 300円</button>
-<button onclick="add('和風だし',180)">和風だし 180円</button>
-<button onclick="add('明太クリーミー',300)">明太クリーミー 300円</button>
-<button onclick="add('チーズ',300)">チーズ 300円</button>
-<button onclick="add('かにクリーム',300)">かにクリーム 300円</button>
-<button onclick="add('かぼちゃ',270)">かぼちゃ 270円</button>
-<button onclick="add('常総牛',630)">常総牛 630円</button>
+<!-- 商品 -->
+<div class="section">
+<h2>商品</h2>
+<div class="grid">
+<button onclick="addItem('ビーフ',230)">ビーフ 230円</button>
+<button onclick="addItem('メンチ',380)">メンチ 380円</button>
+<button onclick="addItem('牛すじ',300)">牛すじ 300円</button>
+<button onclick="addItem('和風だし',180)">和風だし 180円</button>
+<button onclick="addItem('明太クリーミー',300)">明太クリーミー 300円</button>
+<button onclick="addItem('チーズ',300)">チーズ 300円</button>
+<button onclick="addItem('かにクリーム',300)">かにクリーム 300円</button>
+<button onclick="addItem('かぼちゃ',270)">かぼちゃ 270円</button>
+<button onclick="addItem('常総牛',630)">常総牛 630円</button>
+</div>
 </div>
 
+<!-- セット -->
 <div class="section">
 <h2>セットメニュー</h2>
-<p>3点セット 900円 / 4点セット 1200円 / お得セット 1400円</p>
+<div class="grid">
+<button onclick="addSet('3点セット',900)">3点セット 900円</button>
+<button onclick="addSet('4点セット',1200)">4点セット 1200円</button>
+<button onclick="addSet('お得セット',1400)">お得セット 1400円</button>
+<button onclick="addSet('お土産セット',1000)">お土産セット 1000円</button>
+</div>
 </div>
 
+<!-- 注文 -->
 <div class="section">
 <h2>注文内容</h2>
 <div id="order" class="result"></div>
 </div>
 
+<!-- 提案 -->
 <div class="section">
 <h2>セット提案</h2>
-<div id="set"></div>
+<div id="suggest"></div>
 </div>
 
+<!-- 合計 -->
 <div class="section">
 <h2>合計</h2>
 <div id="total">0円</div>
@@ -76,47 +90,96 @@ button {
 
 <script>
 let items = [];
+let sets = [];
 
-function add(name, price){
+function addItem(name, price){
   items.push({name, price});
   render();
 }
 
+function addSet(name, price){
+  sets.push({name, price});
+  render();
+}
+
 function render(){
+
+  // 合計
   let total = 0;
-
   items.forEach(i => total += i.price);
+  sets.forEach(s => total += s.price);
 
-  // セット分解（3点セット優先）
-  let setCount = Math.floor(items.length / 3);
-  let singles = items.slice(setCount * 3);
+  // 商品カウント
+  let count = {};
+  items.forEach(i=>{
+    count[i.name] = (count[i.name] || 0) + 1;
+  });
 
-  // 表示用
+  // =====================
+  // セット提案（内容ベース）
+  // =====================
+  let suggestList = [];
+
+  // 4点セット
+  if(
+    count["ビーフ"] >= 1 &&
+    count["メンチ"] >= 1 &&
+    count["牛すじ"] >= 1 &&
+    count["明太クリーミー"] >= 1
+  ){
+    suggestList.push("👉 4点セットにできます");
+  }
+
+  // お得セット
+  if(
+    count["ビーフ"] >= 3 &&
+    count["メンチ"] >= 2
+  ){
+    suggestList.push("👉 お得セットにできます");
+  }
+
+  // お土産セット
+  if(
+    count["ビーフ"] >= 1 &&
+    count["和風だし"] >= 1 &&
+    count["常総牛"] >= 1
+  ){
+    suggestList.push("👉 お土産セットにできます");
+  }
+
+  // =====================
+  // 表示（まとめ）
+  // =====================
   let html = "";
 
-  if(setCount > 0){
+  if(sets.length > 0){
     html += "🎁 セット<br>";
-    html += `3点セット × ${setCount}<br><br>`;
-  }
-
-  if(singles.length > 0){
-    html += "単品<br>";
-    singles.forEach(i=>{
-      html += `${i.name} ×1<br>`;
+    sets.forEach(s=>{
+      html += `${s.name} ×1<br>`;
     });
+    html += "<br>";
   }
 
-  if(items.length === 0){
-    html = "";
+  if(items.length > 0){
+    html += "単品<br>";
+    for(let name in count){
+      html += `${name} ×${count[name]}<br>`;
+    }
   }
 
   document.getElementById("order").innerHTML = html;
-  document.getElementById("set").innerText = setCount > 0 ? "3点セットあり" : "単品のみ";
+
+  document.getElementById("suggest").innerHTML =
+    suggestList.length > 0
+      ? suggestList.join("<br>")
+      : "（該当するセットはありません）";
+
   document.getElementById("total").innerText = total + "円";
 }
 
 function reset(){
   items = [];
+  sets = [];
   render();
 }
 </script>
