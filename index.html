@@ -526,6 +526,14 @@
       return suggestionCounts;
     }
 
+    function calcSetRegularPrice(setDef) {
+      let regular = 0;
+      for (const [name, qty] of Object.entries(setDef.items)) {
+        regular += (PRICE_MAP[name] || 0) * qty;
+      }
+      return regular;
+    }
+
     function render() {
       const count = buildCountMap();
 
@@ -562,15 +570,27 @@
         document.getElementById("suggest").innerHTML = "（該当なし）";
       } else {
         let suggestHTML = "";
+        let totalSaving = 0;
         for (const setDef of SET_DEFS) {
           const qty = combinedGrouped[setDef.name] || 0;
           if (qty > 0) {
+            const regularPrice = calcSetRegularPrice(setDef);
+            const savingPerSet = Math.max(0, regularPrice - setDef.price);
+            const savingTotal = savingPerSet * qty;
+            totalSaving += savingTotal;
+
             suggestHTML += `<div class="set-row"><span class="set-chip ${setDef.className}">${setDef.name}</span><span>（${setDef.price}円）`;
             if (qty > 1) {
               suggestHTML += ` ×${qty}`;
             }
+            if (savingTotal > 0) {
+              suggestHTML += ` ・${savingTotal}円お得`;
+            }
             suggestHTML += "</span></div>";
           }
+        }
+        if (totalSaving > 0) {
+          suggestHTML += `<div class="subtle">セット合計で ${totalSaving}円お得</div>`;
         }
         document.getElementById("suggest").innerHTML = suggestHTML.trim();
       }
