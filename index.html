@@ -421,7 +421,7 @@
   </div>
 
   <script>
-    const APP_VERSION = "2026-04-22-3";
+    const APP_VERSION = "2026-04-22-4";
 
     // スマホの強いキャッシュ対策: バージョン更新時は1回だけ強制再読込する。
     (function ensureLatestBuild() {
@@ -629,6 +629,21 @@
       return { appliedSetCounts: plan.setCounts, remainingSingles: plan.remainingSingles, total };
     }
 
+    function calcSuggestionSetCounts(countMap) {
+      const suggestionCounts = {};
+      for (const setDef of SET_DEFS) {
+        let possibleQty = Infinity;
+        for (const [name, qty] of Object.entries(setDef.items)) {
+          const has = countMap[name] || 0;
+          possibleQty = Math.min(possibleQty, Math.floor(has / qty));
+        }
+        if (possibleQty > 0 && possibleQty !== Infinity) {
+          suggestionCounts[setDef.name] = possibleQty;
+        }
+      }
+      return suggestionCounts;
+    }
+
     function normalizeMoney(value) {
       const num = Number(value);
       if (Number.isNaN(num) || num < 0) return 0;
@@ -677,7 +692,8 @@
       }
       document.getElementById("order").innerHTML = orderHTML || "なし";
 
-      const { appliedSetCounts, remainingSingles, total } = calcAutoSets(count);
+      const { remainingSingles, total } = calcAutoSets(count);
+      const suggestedSetCounts = calcSuggestionSetCounts(count);
       let fixedSetTotal = 0;
       const combinedGrouped = {};
 
@@ -689,7 +705,7 @@
         }
       }
 
-      for (const [setName, qty] of Object.entries(appliedSetCounts)) {
+      for (const [setName, qty] of Object.entries(suggestedSetCounts)) {
         combinedGrouped[setName] = (combinedGrouped[setName] || 0) + qty;
       }
 
