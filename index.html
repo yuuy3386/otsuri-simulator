@@ -1,179 +1,487 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>お釣り＆セット提案ツール</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>お釣り＆セット提案ツール</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      margin: 0;
+      background: #f3f3f3;
+      color: #222;
+      min-width: 720px;
+      overflow-x: auto;
+    }
 
-<style>
-body {
-  font-family: sans-serif;
-  padding:20px;
-}
+    h1 {
+      font-size: 28px;
+      margin-bottom: 24px;
+    }
 
-h1 {
-  font-size:28px;
-}
+    h2 {
+      font-size: 22px;
+      margin: 28px 0 14px;
+    }
 
-.grid {
-  display:grid;
-  grid-template-columns: repeat(3,1fr);
-  gap:10px;
-  margin-bottom:20px;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
 
-button {
-  padding:15px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  background:#f5f5f5;
-  cursor:pointer;
-}
+    button {
+      padding: 16px 12px;
+      border-radius: 12px;
+      border: 1px solid #cfcfcf;
+      background: #f8f8f8;
+      cursor: pointer;
+      font-size: 16px;
+    }
 
-.section {
-  margin-top:30px;
-}
+    .section {
+      margin-top: 28px;
+    }
 
-.total {
-  font-size:32px;
-  font-weight:bold;
-}
-</style>
+    .box {
+      line-height: 1.9;
+      font-size: 18px;
+      white-space: normal;
+    }
+
+    .total {
+      font-size: 42px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .reset-wrap {
+      margin-top: 18px;
+    }
+
+    .subtle {
+      color: #666;
+    }
+
+    .order-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .mini-btn {
+      padding: 6px 10px;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+
+    .set-row {
+      margin-bottom: 8px;
+    }
+
+    .set-chip {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      margin-right: 8px;
+    }
+
+    .set-otoku {
+      background: #ffe9ea;
+      color: #b42332;
+      border-color: #f7bcc1;
+    }
+
+    .set-4ten {
+      background: #e8f3ff;
+      color: #165ea8;
+      border-color: #b9d8f7;
+    }
+
+    .set-omiyage {
+      background: #e9f9ef;
+      color: #1f7a44;
+      border-color: #bdeacb;
+    }
+
+    .set-3ten {
+      background: #fff4e6;
+      color: #9a5a10;
+      border-color: #f6d6ad;
+    }
+
+    .cash-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 420px) minmax(220px, 260px);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .cash-box {
+      display: grid;
+      gap: 10px;
+    }
+
+    .cash-box label {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .cash-box input {
+      width: 50%;
+      min-width: 170px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #cfcfcf;
+      font-size: 18px;
+      box-sizing: border-box;
+      background: #fff;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .keypad button {
+      padding: 14px 0;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .keypad-wide {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 24px;
+      }
+
+      .total {
+        font-size: 36px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <h1>キッチンカー向け｜お釣り計算＆セット提案ツール</h1>
 
-<h1>キッチンカー向け｜お釣り計算＆セット提案ツール</h1>
+  <div class="section">
+    <h2>商品を選択</h2>
+    <div class="grid">
+      <button onclick="addItem('ビーフ', 230)">ビーフ 230円</button>
+      <button onclick="addItem('メンチ', 380)">メンチ 380円</button>
+      <button onclick="addItem('牛すじ', 300)">牛すじ 300円</button>
 
-<!-- 商品 -->
-<div class="section">
-<h2>商品を選択</h2>
+      <button onclick="addItem('和風だし', 180)">和風だし 180円</button>
+      <button onclick="addItem('明太クリーミー', 300)">明太クリーミー 300円</button>
+      <button onclick="addItem('チーズ', 300)">チーズ 300円</button>
 
-<div class="grid">
-<button onclick="addItem('ビーフ',230)">ビーフ 230円</button>
-<button onclick="addItem('メンチ',380)">メンチ 380円</button>
-<button onclick="addItem('牛すじ',300)">牛すじ 300円</button>
+      <button onclick="addItem('かにクリーム', 300)">かにクリーム 300円</button>
+      <button onclick="addItem('かぼちゃ', 270)">かぼちゃ 270円</button>
+      <button onclick="addItem('常総牛', 630)">常総牛 630円</button>
+    </div>
+  </div>
 
-<button onclick="addItem('和風だし',180)">和風だし 180円</button>
-<button onclick="addItem('明太クリーミー',300)">明太クリーミー 300円</button>
-<button onclick="addItem('チーズ',300)">チーズ 300円</button>
+  <div class="section">
+    <h2>注文内容</h2>
+    <div id="order" class="box subtle">なし</div>
+  </div>
 
-<button onclick="addItem('かにクリーム',300)">かにクリーム 300円</button>
-<button onclick="addItem('かぼちゃ',270)">かぼちゃ 270円</button>
-<button onclick="addItem('常総牛',630)">常総牛 630円</button>
-</div>
-</div>
+  <div class="section">
+    <h2>セット提案</h2>
+    <div id="suggest" class="box subtle">（該当なし）</div>
+    <div id="singleItems" class="box subtle"></div>
+  </div>
 
-<!-- 注文内容 -->
-<div class="section">
-<h2>注文内容</h2>
-<div id="order">なし</div>
-</div>
+  <div class="section">
+    <h2>合計</h2>
+    <div id="total" class="total">0円</div>
+  </div>
 
-<!-- セット提案 -->
-<div class="section">
-<h2>セット提案</h2>
-<div id="suggest">（該当なし）</div>
-</div>
+  <div class="section">
+    <h2>お釣り検査員</h2>
+    <div class="cash-layout">
+      <div class="cash-box">
+        <label for="receivedMoney">預かり金額</label>
+        <input id="receivedMoney" type="number" min="0" step="1" value="0" oninput="updateChangeGuide()" />
 
-<!-- 合計 -->
-<div class="section">
-<h2>合計</h2>
-<div id="total" class="total">0円</div>
-</div>
+        <label for="inputChange">おつり（自動計算）</label>
+        <input id="inputChange" type="number" min="0" step="1" value="0" readonly />
 
-<button onclick="resetAll()">リセット</button>
+        <div id="changeGuide" class="box subtle"></div>
+      </div>
 
-<script>
+      <div class="keypad">
+        <button onclick="tapKeypad('7')">7</button>
+        <button onclick="tapKeypad('8')">8</button>
+        <button onclick="tapKeypad('9')">9</button>
+        <button onclick="tapKeypad('4')">4</button>
+        <button onclick="tapKeypad('5')">5</button>
+        <button onclick="tapKeypad('6')">6</button>
+        <button onclick="tapKeypad('1')">1</button>
+        <button onclick="tapKeypad('2')">2</button>
+        <button onclick="tapKeypad('3')">3</button>
+        <button onclick="tapKeypad('0')">0</button>
+        <button onclick="tapKeypad('00')">00</button>
+        <button onclick="tapBackspace()">⌫</button>
+        <button class="keypad-wide" onclick="tapClear()">C</button>
+      </div>
+    </div>
+  </div>
 
-let items = [];
+  <div class="reset-wrap">
+    <button onclick="resetAll()">リセット</button>
+  </div>
 
-function addItem(name, price){
-  items.push({name, price});
-  render();
-}
+  <script>
+    const PRICE_MAP = {
+      "ビーフ": 230,
+      "メンチ": 380,
+      "牛すじ": 300,
+      "和風だし": 180,
+      "明太クリーミー": 300,
+      "チーズ": 300,
+      "かにクリーム": 300,
+      "かぼちゃ": 270,
+      "常総牛": 630
+    };
 
-function resetAll(){
-  items = [];
-  render();
-}
+    const SET_DEFS = [
+      {
+        name: "お得セット",
+        price: 1400,
+        className: "set-otoku",
+        items: { "ビーフ": 3, "メンチ": 2 }
+      },
+      {
+        name: "4点セット",
+        price: 1200,
+        className: "set-4ten",
+        items: { "ビーフ": 1, "メンチ": 1, "牛すじ": 1, "明太クリーミー": 1 }
+      },
+      {
+        name: "お土産セット",
+        price: 1000,
+        className: "set-omiyage",
+        items: { "ビーフ": 1, "和風だし": 1, "常総牛": 1 }
+      },
+      {
+        name: "3点セット",
+        price: 900,
+        className: "set-3ten",
+        items: { "ビーフ": 1, "メンチ": 1, "牛すじ": 1 }
+      }
+    ];
 
-function render(){
+    let items = [];
+    let currentTotal = 0;
 
-  // ------------------
-  // 注文集計
-  // ------------------
-  let count = {};
-  items.forEach(i=>{
-    count[i.name] = (count[i.name]||0)+1;
-  });
+    function addItem(name, price) {
+      items.push({ name, price });
+      render();
+    }
 
-  // ------------------
-  // 注文内容（絶対そのまま）
-  // ------------------
-  let orderHTML = "";
+    function resetAll() {
+      items = [];
+      document.getElementById("receivedMoney").value = 0;
+      document.getElementById("inputChange").value = 0;
+      render();
+    }
 
-  for(let name in count){
-    orderHTML += `${name} ×${count[name]}<br>`;
-  }
+    function tapKeypad(token) {
+      const input = document.getElementById("receivedMoney");
+      const oldValue = String(input.value || "");
+      const base = oldValue === "0" ? "" : oldValue;
+      const next = (base + token).replace(/^0+(\d)/, "$1");
+      input.value = next || "0";
+      updateChangeGuide();
+    }
 
-  document.getElementById("order").innerHTML =
-    orderHTML || "なし";
+    function tapBackspace() {
+      const input = document.getElementById("receivedMoney");
+      const oldValue = String(input.value || "");
+      const next = oldValue.length <= 1 ? "0" : oldValue.slice(0, -1);
+      input.value = next;
+      updateChangeGuide();
+    }
 
+    function tapClear() {
+      const input = document.getElementById("receivedMoney");
+      input.value = 0;
+      updateChangeGuide();
+    }
 
-  // ------------------
-  // セット提案（変換しない）
-  // ------------------
-  let suggestList = [];
+    function removeItem(name) {
+      const idx = items.findIndex((item) => item.name === name);
+      if (idx === -1) return;
+      items.splice(idx, 1);
+      render();
+    }
 
-  // お得セット
-  if((count["ビーフ"]||0)>=3 && (count["メンチ"]||0)>=2){
-    suggestList.push("お得セット（1400円）にできます");
-  }
+    function buildCountMap() {
+      const count = {};
+      for (const item of items) {
+        count[item.name] = (count[item.name] || 0) + 1;
+      }
+      return count;
+    }
 
-  // 4点セット
-  if(
-    (count["ビーフ"]||0)>=1 &&
-    (count["メンチ"]||0)>=1 &&
-    (count["牛すじ"]||0)>=1 &&
-    (count["明太クリーミー"]||0)>=1
-  ){
-    suggestList.push("4点セット（1200円）にできます");
-  }
+    function canApplySet(countMap, setDef) {
+      for (const [name, qty] of Object.entries(setDef.items)) {
+        if ((countMap[name] || 0) < qty) {
+          return false;
+        }
+      }
+      return true;
+    }
 
-  // 3点セット
-  if(
-    (count["ビーフ"]||0)>=1 &&
-    (count["メンチ"]||0)>=1 &&
-    (count["牛すじ"]||0)>=1
-  ){
-    suggestList.push("3点セット（900円）にできます");
-  }
+    function subtractSet(countMap, setDef) {
+      for (const [name, qty] of Object.entries(setDef.items)) {
+        countMap[name] -= qty;
+      }
+    }
 
-  // お土産セット
-  if(
-    (count["ビーフ"]||0)>=1 &&
-    (count["和風だし"]||0)>=1 &&
-    (count["常総牛"]||0)>=1
-  ){
-    suggestList.push("お土産セット（1000円）にできます");
-  }
+    function calcAutoSets(originalCount) {
+      const working = { ...originalCount };
+      const appliedSets = [];
 
-  document.getElementById("suggest").innerHTML =
-    suggestList.length ? suggestList.join("<br>") : "（該当なし）";
+      for (const setDef of SET_DEFS) {
+        while (canApplySet(working, setDef)) {
+          appliedSets.push(setDef);
+          subtractSet(working, setDef);
+        }
+      }
 
+      let total = 0;
+      for (const setDef of appliedSets) {
+        total += setDef.price;
+      }
+      for (const [name, qty] of Object.entries(working)) {
+        if (qty > 0) {
+          total += PRICE_MAP[name] * qty;
+        }
+      }
 
-  // ------------------
-  // 合計（単品のまま）
-  // ------------------
-  let total = 0;
-  items.forEach(i=>{
-    total += i.price;
-  });
+      // 10円未満が出ない前提のため、表示値は10円単位で統一。
+      total = Math.round(total / 10) * 10;
 
-  document.getElementById("total").innerText = total + "円";
-}
+      return { appliedSets, remainingSingles: working, total };
+    }
 
-</script>
+    function normalizeMoney(value) {
+      const num = Number(value);
+      if (Number.isNaN(num) || num < 0) return 0;
+      return Math.floor(num);
+    }
 
+    function getExpectedChange() {
+      const received = normalizeMoney(document.getElementById("receivedMoney").value);
+      return received - currentTotal;
+    }
+
+    function updateChangeGuide() {
+      const guideEl = document.getElementById("changeGuide");
+      const changeEl = document.getElementById("inputChange");
+
+      const received = normalizeMoney(document.getElementById("receivedMoney").value);
+      document.getElementById("receivedMoney").value = received;
+
+      const expected = getExpectedChange();
+      if (received === 0) {
+        guideEl.textContent = "預かり金額を入力してください。";
+        changeEl.value = 0;
+        return;
+      }
+      if (expected < 0) {
+        guideEl.textContent = `${Math.abs(expected)}円 不足しています。`;
+        changeEl.value = 0;
+        return;
+      }
+      changeEl.value = expected;
+      guideEl.textContent = `おつりは ${expected}円 です。`;
+    }
+
+    function render() {
+      const count = buildCountMap();
+
+      let orderHTML = "";
+      for (const [name, qty] of Object.entries(count)) {
+        orderHTML += `<div class="order-row"><span>${name} ×${qty}</span><button class="mini-btn" onclick="removeItem('${name}')">-1 取り消し</button></div>`;
+      }
+      document.getElementById("order").innerHTML = orderHTML || "なし";
+
+      const { appliedSets, remainingSingles, total } = calcAutoSets(count);
+
+      if (appliedSets.length === 0) {
+        document.getElementById("suggest").innerHTML = "（該当なし）";
+      } else {
+        const grouped = {};
+        for (const setDef of appliedSets) {
+          grouped[setDef.name] = (grouped[setDef.name] || 0) + 1;
+        }
+
+        let suggestHTML = "";
+        for (const setDef of SET_DEFS) {
+          const qty = grouped[setDef.name] || 0;
+          if (qty > 0) {
+            suggestHTML += `<div class="set-row"><span class="set-chip ${setDef.className}">${setDef.name}</span><span>（${setDef.price}円）`;
+            if (qty > 1) {
+              suggestHTML += ` ×${qty}`;
+            }
+            suggestHTML += "</span></div>";
+          }
+        }
+        document.getElementById("suggest").innerHTML = suggestHTML.trim();
+      }
+
+      let singleHTML = "";
+      for (const [name, qty] of Object.entries(remainingSingles)) {
+        if (qty > 0) {
+          singleHTML += `${name} ×${qty}<br>`;
+        }
+      }
+      if (singleHTML) {
+        document.getElementById("singleItems").innerHTML = `単品（セット対象外）<br>${singleHTML}`;
+      } else {
+        document.getElementById("singleItems").innerHTML = "";
+      }
+
+      currentTotal = total;
+      document.getElementById("total").textContent = `${total}円`;
+      updateChangeGuide();
+    }
+
+    // 保存後に自動リロードされるよう、index.htmlの更新時刻を監視する。
+    (function enableAutoReloadOnSave() {
+      let lastModified = null;
+      setInterval(async () => {
+        try {
+          const res = await fetch(window.location.href, { method: "HEAD", cache: "no-store" });
+          const current = res.headers.get("Last-Modified");
+          if (!current) return;
+          if (lastModified && current !== lastModified) {
+            window.location.reload();
+            return;
+          }
+          lastModified = current;
+        } catch (e) {
+          // 監視失敗時は何もしない
+        }
+      }, 1000);
+    })();
+
+    render();
+  </script>
 </body>
 </html>
