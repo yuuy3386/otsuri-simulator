@@ -88,7 +88,7 @@
     }
 
     .total {
-      font-size: 42px;
+      font-size: 34px;
       font-weight: bold;
       margin-top: 8px;
     }
@@ -153,51 +153,6 @@
       border-color: #f6d6ad;
     }
 
-    .cash-layout {
-      display: grid;
-      grid-template-columns: minmax(260px, 420px) minmax(220px, 260px);
-      gap: 16px;
-      align-items: start;
-    }
-
-    .cash-box {
-      display: grid;
-      gap: 10px;
-    }
-
-    .cash-box label {
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .cash-box input {
-      width: 50%;
-      min-width: 170px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid #cfcfcf;
-      font-size: 18px;
-      box-sizing: border-box;
-      background: #fff;
-    }
-
-    .keypad {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .keypad button {
-      padding: 14px 0;
-      border-radius: 10px;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .keypad-wide {
-      grid-column: span 2;
-    }
-
     @media (max-width: 640px) {
       .app {
         padding: 8px;
@@ -231,11 +186,14 @@
       .section:nth-of-type(2) { grid-column: 2; grid-row: 2; }
       .section:nth-of-type(3) { grid-column: 1; grid-row: 3; }
       .section:nth-of-type(4) { grid-column: 2; grid-row: 3; }
-      .section:nth-of-type(5) { grid-column: 1; grid-row: 4; }
-      .section:nth-of-type(6) { grid-column: 2; grid-row: 4 / 6; }
+      .section:nth-of-type(5) { grid-column: 1 / -1; grid-row: 4; }
 
       .section:nth-of-type(1),
       .section:nth-of-type(2) {
+        overflow-y: auto;
+      }
+
+      .section:nth-of-type(4) {
         overflow-y: auto;
       }
 
@@ -287,47 +245,15 @@
         line-height: 1.45;
       }
 
-      .section:nth-of-type(3) .box,
-      .section:nth-of-type(4) .box {
+      .section:nth-of-type(3) .box {
         flex: 1;
         min-height: 0;
         overflow-y: auto;
       }
 
       .total {
-        font-size: 28px;
+        font-size: 24px;
         margin-top: 0;
-      }
-
-      .cash-layout {
-        grid-template-columns: 1fr 100px;
-        gap: 6px;
-        min-height: 0;
-      }
-
-      .cash-box {
-        gap: 4px;
-        min-height: 0;
-      }
-
-      .cash-box label {
-        font-size: 12px;
-      }
-
-      .cash-box input {
-        width: 100%;
-        min-width: 0;
-        padding: 6px 8px;
-        font-size: 13px;
-      }
-
-      .keypad {
-        gap: 4px;
-      }
-
-      .keypad button {
-        padding: 6px 0;
-        font-size: 12px;
       }
 
       .reset-wrap {
@@ -385,43 +311,12 @@
     <div id="total" class="total">0円</div>
   </div>
 
-  <div class="section">
-    <h2>お釣り検査員</h2>
-    <div class="cash-layout">
-      <div class="cash-box">
-        <label for="receivedMoney">預かり金額</label>
-        <input id="receivedMoney" type="number" min="0" step="1" value="0" oninput="updateChangeGuide()" />
-
-        <label for="inputChange">おつり（自動計算）</label>
-        <input id="inputChange" type="number" min="0" step="1" value="0" readonly />
-
-        <div id="changeGuide" class="box subtle"></div>
-      </div>
-
-      <div class="keypad">
-        <button onclick="tapKeypad('7')">7</button>
-        <button onclick="tapKeypad('8')">8</button>
-        <button onclick="tapKeypad('9')">9</button>
-        <button onclick="tapKeypad('4')">4</button>
-        <button onclick="tapKeypad('5')">5</button>
-        <button onclick="tapKeypad('6')">6</button>
-        <button onclick="tapKeypad('1')">1</button>
-        <button onclick="tapKeypad('2')">2</button>
-        <button onclick="tapKeypad('3')">3</button>
-        <button onclick="tapKeypad('0')">0</button>
-        <button onclick="tapKeypad('00')">00</button>
-        <button onclick="tapBackspace()">⌫</button>
-        <button class="keypad-wide" onclick="tapClear()">C</button>
-      </div>
-    </div>
-  </div>
-
   <div class="reset-wrap">
     <button onclick="resetAll()">リセット</button>
   </div>
 
   <script>
-    const APP_VERSION = "2026-04-22-4";
+    const APP_VERSION = "2026-04-22-5";
 
     // スマホの強いキャッシュ対策: バージョン更新時は1回だけ強制再読込する。
     (function ensureLatestBuild() {
@@ -475,7 +370,6 @@
 
     let items = [];
     let fixedSetCounts = {};
-    let currentTotal = 0;
 
     function addItem(name, price) {
       items.push({ name, price });
@@ -505,32 +399,7 @@
     function resetAll() {
       items = [];
       fixedSetCounts = {};
-      document.getElementById("receivedMoney").value = 0;
-      document.getElementById("inputChange").value = 0;
       render();
-    }
-
-    function tapKeypad(token) {
-      const input = document.getElementById("receivedMoney");
-      const oldValue = String(input.value || "");
-      const base = oldValue === "0" ? "" : oldValue;
-      const next = (base + token).replace(/^0+(\d)/, "$1");
-      input.value = next || "0";
-      updateChangeGuide();
-    }
-
-    function tapBackspace() {
-      const input = document.getElementById("receivedMoney");
-      const oldValue = String(input.value || "");
-      const next = oldValue.length <= 1 ? "0" : oldValue.slice(0, -1);
-      input.value = next;
-      updateChangeGuide();
-    }
-
-    function tapClear() {
-      const input = document.getElementById("receivedMoney");
-      input.value = 0;
-      updateChangeGuide();
     }
 
     function removeItem(name) {
@@ -644,39 +513,6 @@
       return suggestionCounts;
     }
 
-    function normalizeMoney(value) {
-      const num = Number(value);
-      if (Number.isNaN(num) || num < 0) return 0;
-      return Math.floor(num);
-    }
-
-    function getExpectedChange() {
-      const received = normalizeMoney(document.getElementById("receivedMoney").value);
-      return received - currentTotal;
-    }
-
-    function updateChangeGuide() {
-      const guideEl = document.getElementById("changeGuide");
-      const changeEl = document.getElementById("inputChange");
-
-      const received = normalizeMoney(document.getElementById("receivedMoney").value);
-      document.getElementById("receivedMoney").value = received;
-
-      const expected = getExpectedChange();
-      if (received === 0) {
-        guideEl.textContent = "預かり金額を入力してください。";
-        changeEl.value = 0;
-        return;
-      }
-      if (expected < 0) {
-        guideEl.textContent = `${Math.abs(expected)}円 不足しています。`;
-        changeEl.value = 0;
-        return;
-      }
-      changeEl.value = expected;
-      guideEl.textContent = `おつりは ${expected}円 です。`;
-    }
-
     function render() {
       const count = buildCountMap();
 
@@ -739,9 +575,7 @@
       }
 
       const grandTotal = fixedSetTotal + total;
-      currentTotal = grandTotal;
       document.getElementById("total").textContent = `${grandTotal}円`;
-      updateChangeGuide();
     }
 
     // 保存後に自動リロードされるよう、index.htmlの更新時刻を監視する。
