@@ -291,6 +291,19 @@
   </div>
 
   <script>
+    const APP_VERSION = "2026-04-22-2";
+
+    // スマホの強いキャッシュ対策: バージョン更新時は1回だけ強制再読込する。
+    (function ensureLatestBuild() {
+      const key = "otsuri_app_version";
+      const saved = localStorage.getItem(key);
+      if (saved === APP_VERSION) return;
+      localStorage.setItem(key, APP_VERSION);
+      const url = new URL(window.location.href);
+      url.searchParams.set("v", APP_VERSION);
+      window.location.replace(url.toString());
+    })();
+
     const PRICE_MAP = {
       "ビーフ": 230,
       "メンチ": 380,
