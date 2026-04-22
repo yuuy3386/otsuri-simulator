@@ -244,6 +244,10 @@
         margin-bottom: 0;
       }
 
+      .grid button {
+        min-height: 64px;
+      }
+
       .set-grid {
         gap: 6px;
         margin-bottom: 0;
@@ -261,6 +265,11 @@
 
       .btn-2line .price {
         font-size: 11px;
+      }
+
+      .grid button:not(.btn-2line) {
+        font-size: 11px;
+        line-height: 1.2;
       }
 
       .mini-btn {
@@ -344,7 +353,7 @@
       <button onclick="addItem('明太クリーミー', 300)">明太クリーミー 300円</button>
       <button class="btn-2line" onclick="addItem('チーズ', 300)"><span>チーズ</span><span class="price">300円</span></button>
 
-      <button onclick="addItem('かにクリーム', 300)">かにクリーム 300円</button>
+      <button class="btn-2line" onclick="addItem('かにクリーム', 300)"><span>かにクリーム</span><span class="price">300円</span></button>
       <button class="btn-2line" onclick="addItem('かぼちゃ', 270)"><span>かぼちゃ</span><span class="price">270円</span></button>
       <button class="btn-2line" onclick="addItem('常総牛', 630)"><span>常総牛</span><span class="price">630円</span></button>
     </div>
