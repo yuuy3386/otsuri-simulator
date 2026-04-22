@@ -61,6 +61,21 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .btn-2line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
+      gap: 4px;
+    }
+
+    .btn-2line .price {
+      font-size: 14px;
+      color: #555;
+      font-weight: 600;
+    }
+
     .section {
       margin-top: 28px;
     }
@@ -200,17 +215,17 @@
   <div class="section">
     <h2>商品を選択</h2>
     <div class="grid">
-      <button onclick="addItem('ビーフ', 230)">ビーフ 230円</button>
-      <button onclick="addItem('メンチ', 380)">メンチ 380円</button>
-      <button onclick="addItem('牛すじ', 300)">牛すじ 300円</button>
+      <button class="btn-2line" onclick="addItem('ビーフ', 230)"><span>ビーフ</span><span class="price">230円</span></button>
+      <button class="btn-2line" onclick="addItem('メンチ', 380)"><span>メンチ</span><span class="price">380円</span></button>
+      <button class="btn-2line" onclick="addItem('牛すじ', 300)"><span>牛すじ</span><span class="price">300円</span></button>
 
-      <button onclick="addItem('和風だし', 180)">和風だし 180円</button>
+      <button class="btn-2line" onclick="addItem('和風だし', 180)"><span>和風だし</span><span class="price">180円</span></button>
       <button onclick="addItem('明太クリーミー', 300)">明太クリーミー 300円</button>
-      <button onclick="addItem('チーズ', 300)">チーズ 300円</button>
+      <button class="btn-2line" onclick="addItem('チーズ', 300)"><span>チーズ</span><span class="price">300円</span></button>
 
       <button onclick="addItem('かにクリーム', 300)">かにクリーム 300円</button>
-      <button onclick="addItem('かぼちゃ', 270)">かぼちゃ 270円</button>
-      <button onclick="addItem('常総牛', 630)">常総牛 630円</button>
+      <button class="btn-2line" onclick="addItem('かぼちゃ', 270)"><span>かぼちゃ</span><span class="price">270円</span></button>
+      <button class="btn-2line" onclick="addItem('常総牛', 630)"><span>常総牛</span><span class="price">630円</span></button>
     </div>
   </div>
 
@@ -219,7 +234,7 @@
     <div class="set-grid">
       <button onclick="addSet('お得セット')">お得セット 1400円</button>
       <button onclick="addSet('4点セット')">4点セット 1200円</button>
-      <button onclick="addSet('お土産セット')">お土産セット 1000円</button>
+      <button class="btn-2line" onclick="addSet('お土産セット')"><span>お土産セット</span><span class="price">1000円</span></button>
       <button onclick="addSet('3点セット')">3点セット 900円</button>
     </div>
   </div>
