@@ -88,7 +88,7 @@
     }
 
     .total {
-      font-size: 34px;
+      font-size: 30px;
       font-weight: bold;
       margin-top: 8px;
     }
@@ -252,7 +252,7 @@
       }
 
       .total {
-        font-size: 24px;
+        font-size: 20px;
         margin-top: 0;
       }
 
@@ -316,7 +316,7 @@
   </div>
 
   <script>
-    const APP_VERSION = "2026-04-22-5";
+    const APP_VERSION = "2026-04-22-6";
 
     // スマホの強いキャッシュ対策: バージョン更新時は1回だけ強制再読込する。
     (function ensureLatestBuild() {
@@ -502,8 +502,8 @@
       const suggestionCounts = {};
       const working = { ...countMap };
 
-      // 4点と3点は内容が重なるため、4点を先に確定してから3点を算出する。
-      // これにより「4点 + 3点×2」のような重複表示を防ぐ。
+      // 各セットは提案上「最大1回」だけ表示する。
+      // 4点と3点の重複も避けるため、順序を固定して1回ずつ判定する。
       const ordered = ["お得セット", "お土産セット", "4点セット", "3点セット"];
       for (const setName of ordered) {
         const setDef = SET_DEFS.find((s) => s.name === setName);
@@ -516,9 +516,9 @@
         }
 
         if (possibleQty > 0 && possibleQty !== Infinity) {
-          suggestionCounts[setDef.name] = possibleQty;
+          suggestionCounts[setDef.name] = 1;
           for (const [name, qty] of Object.entries(setDef.items)) {
-            working[name] = (working[name] || 0) - qty * possibleQty;
+            working[name] = (working[name] || 0) - qty;
           }
         }
       }
