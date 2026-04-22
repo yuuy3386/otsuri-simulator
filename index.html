@@ -500,16 +500,29 @@
 
     function calcSuggestionSetCounts(countMap) {
       const suggestionCounts = {};
-      for (const setDef of SET_DEFS) {
+      const working = { ...countMap };
+
+      // 4点と3点は内容が重なるため、4点を先に確定してから3点を算出する。
+      // これにより「4点 + 3点×2」のような重複表示を防ぐ。
+      const ordered = ["お得セット", "お土産セット", "4点セット", "3点セット"];
+      for (const setName of ordered) {
+        const setDef = SET_DEFS.find((s) => s.name === setName);
+        if (!setDef) continue;
+
         let possibleQty = Infinity;
         for (const [name, qty] of Object.entries(setDef.items)) {
-          const has = countMap[name] || 0;
+          const has = working[name] || 0;
           possibleQty = Math.min(possibleQty, Math.floor(has / qty));
         }
+
         if (possibleQty > 0 && possibleQty !== Infinity) {
           suggestionCounts[setDef.name] = possibleQty;
+          for (const [name, qty] of Object.entries(setDef.items)) {
+            working[name] = (working[name] || 0) - qty * possibleQty;
+          }
         }
       }
+
       return suggestionCounts;
     }
 
