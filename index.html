@@ -77,6 +77,12 @@
       font-weight: 600;
     }
 
+    .btn-2line .saving {
+      font-size: 12px;
+      color: #b42332;
+      font-weight: 700;
+    }
+
     .section {
       margin-top: 28px;
     }
@@ -88,13 +94,272 @@
     }
 
     .total {
-      font-size: 30px;
+      font-size: 32px;
       font-weight: bold;
+      margin-top: 8px;
+      color: #0a58ca;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+    .total-pop {
+      animation: totalPop 240ms ease-out;
+    }
+    @keyframes totalPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.12); color: #084298; }
+      100% { transform: scale(1); }
+    }
+
+    .profit-line {
+      font-size: 15px;
+      margin-top: 6px;
+      color: #444;
+    }
+
+    .item-btn.selected,
+    .set-btn.selected {
+      border-color: #0d6efd;
+      background: #eaf3ff;
+      box-shadow: inset 0 0 0 1px #0d6efd;
+    }
+
+    .suggest-box.flash {
+      animation: suggestFlash 320ms ease-out;
+    }
+    @keyframes suggestFlash {
+      0% { background: #fffdf4; }
+      100% { background: transparent; }
+    }
+
+    .actions-wrap {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .primary-btn {
+      background: #0d6efd;
+      border-color: #0a58ca;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .warn-btn {
+      background: #fff4e6;
+      border-color: #f0c084;
+      color: #9a5a10;
+    }
+
+    .payment-wrap {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .payment-wrap input {
+      font-size: 18px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #cfcfcf;
+      width: 140px;
+      box-sizing: border-box;
+      background: #fff;
+    }
+
+    .history-box {
+      max-height: 190px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 8px;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .history-item {
+      border-bottom: 1px dashed #ddd;
+      padding: 4px 0;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .month-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .month-tools input {
+      font-size: 16px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #cfcfcf;
+      background: #fff;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 6px;
       margin-top: 8px;
     }
 
-    .reset-wrap {
-      margin-top: 18px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 900px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid #eee;
+      padding: 6px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+    }
+
+    .stock-input {
+      width: 80px;
+      font-size: 14px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px solid #cfcfcf;
+      text-align: right;
+      box-sizing: border-box;
+    }
+    .cost-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 8px;
+    }
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .history-group {
+      margin: 4px 0;
+      padding-left: 8px;
+      border-left: 3px solid #eee;
+    }
+    .history-title {
+      font-weight: 700;
+      font-size: 12px;
+      color: #444;
+      margin: 2px 0;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(34, 34, 34, 0.92);
+      color: #fff;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .success-burst {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0;
+      background: radial-gradient(circle at 50% 55%, rgba(47, 125, 50, 0.18) 0%, rgba(47, 125, 50, 0.08) 24%, rgba(47, 125, 50, 0) 55%);
+    }
+
+    .success-burst.show {
+      animation: successBurst 520ms ease-out;
+    }
+
+    @keyframes successBurst {
+      0% { opacity: 0; transform: scale(0.96); }
+      30% { opacity: 1; transform: scale(1.02); }
+      100% { opacity: 0; transform: scale(1.08); }
+    }
+
+    .kpi {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 8px;
+    }
+
+    .kpi-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 8px;
+    }
+
+    .kpi-card .label {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .kpi-card .value {
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .integration-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 8px;
+    }
+
+    .integration-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .integration-row input {
+      flex: 1;
+      min-width: 240px;
+      font-size: 14px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #cfcfcf;
+      background: #fff;
+      box-sizing: border-box;
     }
 
     .subtle {
@@ -157,11 +422,7 @@
       .app {
         padding: 8px;
         height: 100dvh;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto minmax(0, 1.1fr) minmax(0, 1fr) auto auto;
-        gap: 8px;
-        overflow: hidden;
+        overflow-y: auto;
       }
 
       h1 {
@@ -180,21 +441,6 @@
         min-height: 0;
         display: flex;
         flex-direction: column;
-      }
-
-      .section:nth-of-type(1) { grid-column: 1; grid-row: 2; }
-      .section:nth-of-type(2) { grid-column: 2; grid-row: 2; }
-      .section:nth-of-type(3) { grid-column: 1; grid-row: 3; }
-      .section:nth-of-type(4) { grid-column: 2; grid-row: 3; }
-      .section:nth-of-type(5) { grid-column: 1 / -1; grid-row: 4; }
-
-      .section:nth-of-type(1),
-      .section:nth-of-type(2) {
-        overflow-y: auto;
-      }
-
-      .section:nth-of-type(4) {
-        overflow-y: auto;
       }
 
       .grid {
@@ -225,6 +471,10 @@
         font-size: 11px;
       }
 
+      .btn-2line .saving {
+        font-size: 10px;
+      }
+
       .grid button:not(.btn-2line) {
         font-size: 11px;
         line-height: 1.2;
@@ -245,21 +495,31 @@
         line-height: 1.45;
       }
 
-      .section:nth-of-type(3) .box {
-        flex: 1;
-        min-height: 0;
-        overflow-y: auto;
-      }
-
       .total {
         font-size: 20px;
         margin-top: 0;
       }
 
-      .reset-wrap {
-        grid-column: 1 / -1;
-        grid-row: 5;
+      .actions-wrap {
         margin-top: 0;
+      }
+
+      .payment-wrap input {
+        font-size: 14px;
+        width: 120px;
+      }
+
+      .month-tools input {
+        font-size: 12px;
+      }
+
+      .stock-input {
+        width: 68px;
+        font-size: 12px;
+      }
+
+      .integration-row input {
+        min-width: 160px;
       }
     }
   </style>
@@ -271,27 +531,27 @@
   <div class="section">
     <h2>商品を選択</h2>
     <div class="grid">
-      <button class="btn-2line" onclick="addItem('ビーフ', 230)"><span>ビーフ</span><span class="price">230円</span></button>
-      <button class="btn-2line" onclick="addItem('メンチ', 380)"><span>メンチ</span><span class="price">380円</span></button>
-      <button class="btn-2line" onclick="addItem('牛すじ', 300)"><span>牛すじ</span><span class="price">300円</span></button>
+      <button class="btn-2line item-btn" data-item-name="ビーフ" onclick="addItem('ビーフ', 230)"><span>ビーフ</span><span class="price">230円</span></button>
+      <button class="btn-2line item-btn" data-item-name="メンチ" onclick="addItem('メンチ', 380)"><span>メンチ</span><span class="price">380円</span></button>
+      <button class="btn-2line item-btn" data-item-name="牛すじ" onclick="addItem('牛すじ', 300)"><span>牛すじ</span><span class="price">300円</span></button>
 
-      <button class="btn-2line" onclick="addItem('和風だし', 180)"><span>和風だし</span><span class="price">180円</span></button>
-      <button onclick="addItem('明太クリーミー', 300)">明太クリーミー 300円</button>
-      <button class="btn-2line" onclick="addItem('チーズ', 300)"><span>チーズ</span><span class="price">300円</span></button>
+      <button class="btn-2line item-btn" data-item-name="和風だし" onclick="addItem('和風だし', 180)"><span>和風だし</span><span class="price">180円</span></button>
+      <button class="item-btn" data-item-name="明太クリーミー" onclick="addItem('明太クリーミー', 300)">明太クリーミー 300円</button>
+      <button class="btn-2line item-btn" data-item-name="チーズ" onclick="addItem('チーズ', 300)"><span>チーズ</span><span class="price">300円</span></button>
 
-      <button class="btn-2line" onclick="addItem('かにクリーム', 300)"><span>かにクリーム</span><span class="price">300円</span></button>
-      <button class="btn-2line" onclick="addItem('かぼちゃ', 270)"><span>かぼちゃ</span><span class="price">270円</span></button>
-      <button class="btn-2line" onclick="addItem('常総牛', 630)"><span>常総牛</span><span class="price">630円</span></button>
+      <button class="btn-2line item-btn" data-item-name="かにクリーム" onclick="addItem('かにクリーム', 300)"><span>かにクリーム</span><span class="price">300円</span></button>
+      <button class="btn-2line item-btn" data-item-name="かぼちゃ" onclick="addItem('かぼちゃ', 270)"><span>かぼちゃ</span><span class="price">270円</span></button>
+      <button class="btn-2line item-btn" data-item-name="常総牛" onclick="addItem('常総牛', 630)"><span>常総牛</span><span class="price">630円</span></button>
     </div>
   </div>
 
   <div class="section">
     <h2>セットを追加（固定）</h2>
     <div class="set-grid">
-      <button onclick="addSet('お得セット')">お得セット 1400円</button>
-      <button onclick="addSet('4点セット')">4点セット 1200円</button>
-      <button class="btn-2line" onclick="addSet('お土産セット')"><span>お土産セット</span><span class="price">1000円</span></button>
-      <button onclick="addSet('3点セット')">3点セット 900円</button>
+      <button class="btn-2line set-btn" data-set-name="お得セット" onclick="addSet('お得セット')"></button>
+      <button class="btn-2line set-btn" data-set-name="4点セット" onclick="addSet('4点セット')"></button>
+      <button class="btn-2line set-btn" data-set-name="お土産セット" onclick="addSet('お土産セット')"></button>
+      <button class="btn-2line set-btn" data-set-name="3点セット" onclick="addSet('3点セット')"></button>
     </div>
   </div>
 
@@ -302,21 +562,102 @@
 
   <div class="section">
     <h2>セット提案</h2>
-    <div id="suggest" class="box subtle">（該当なし）</div>
+    <div id="suggest" class="box subtle suggest-box">（該当なし）</div>
     <div id="singleItems" class="box subtle"></div>
   </div>
 
   <div class="section">
     <h2>合計</h2>
     <div id="total" class="total">0円</div>
+    <div id="orderProfit" class="profit-line">売上 0円 / 原価 0円 / 粗利 0円</div>
   </div>
 
-  <div class="reset-wrap">
-    <button onclick="resetAll()">リセット</button>
+  <div class="section">
+    <h2>現金会計</h2>
+    <div class="payment-wrap">
+      <label for="cashInput">お預かり</label>
+      <input id="cashInput" type="number" inputmode="numeric" min="0" step="10" placeholder="例: 2000" />
+      <span id="change" class="box subtle">お釣り: -</span>
+    </div>
   </div>
+
+  <div class="actions-wrap">
+    <button class="primary-btn" onclick="finalizeOrder()">会計確定</button>
+    <button class="warn-btn" onclick="undoLastAction()">1手戻す</button>
+    <button onclick="resetAll()">リセット</button>
+    <button class="warn-btn" onclick="resetDemoData()">テストデータ全リセット</button>
+  </div>
+
+  <div class="section">
+    <h2>会計履歴（直近20件）</h2>
+    <div id="history" class="history-box subtle">まだ会計履歴はありません。</div>
+  </div>
+
+  <div class="section">
+    <h2>月次管理（在庫・消化率・利益）</h2>
+    <div class="month-tools">
+      <label for="targetMonth">対象月</label>
+      <input id="targetMonth" type="month" />
+      <label for="monthlyFixedCost">固定費(任意)</label>
+      <input id="monthlyFixedCost" type="number" min="0" step="100" placeholder="0" />
+      <button class="warn-btn" onclick="loadSubmissionSampleData()">提出用サンプル投入</button>
+      <button onclick="downloadMonthlyCsv()">月次CSV出力</button>
+    </div>
+
+    <div class="kpi" id="monthlyKpis"></div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>販売数</th>
+            <th>期首在庫</th>
+            <th>仕入数</th>
+            <th>廃棄数</th>
+            <th>理論在庫</th>
+            <th>消化率</th>
+            <th>単位原価</th>
+            <th>売上</th>
+            <th>原価</th>
+            <th>粗利</th>
+          </tr>
+        </thead>
+        <tbody id="monthlyRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>原価設定（商品別）</h2>
+    <div id="costConfig" class="cost-grid"></div>
+  </div>
+
+  <div class="section">
+    <h2>スプレッドシート連携</h2>
+    <div class="integration-box">
+      <div class="integration-row">
+        <label for="sheetWebhookUrl">Apps Script WebアプリURL</label>
+        <input id="sheetWebhookUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec" />
+      </div>
+      <div class="integration-row">
+        <button onclick="saveWebhookUrl()">URL保存</button>
+        <button onclick="testSheetConnection()">接続テスト</button>
+        <button class="primary-btn" onclick="sendSalesLogToSheet()">会計履歴を送信</button>
+        <button class="primary-btn" onclick="sendMonthlyReportToSheet()">月次集計を送信</button>
+      </div>
+      <div id="sheetStatus" class="subtle">未接続</div>
+    </div>
+  </div>
+  <div id="appToast" class="toast"></div>
+  <div id="successBurst" class="success-burst"></div>
 
   <script>
-    const APP_VERSION = "2026-04-22-6";
+    const APP_VERSION = "2026-04-27-8";
+    const STORAGE_KEY = "kitchencar_pos_state_v1";
+    const WEBHOOK_URL_KEY = "kitchencar_sheet_webhook_url_v1";
+    const RESET_TOKEN_KEY = "kitchencar_reset_token_v1";
+    const RESET_TOKEN = "reset-2026-04-27-b";
 
     // スマホの強いキャッシュ対策: バージョン更新時は1回だけ強制再読込する。
     (function ensureLatestBuild() {
@@ -329,6 +670,14 @@
       window.location.replace(url.toString());
     })();
 
+    // 提出前の試験入力を一度だけ初期化する。
+    (function resetTrialDataOnce() {
+      const done = localStorage.getItem(RESET_TOKEN_KEY);
+      if (done === RESET_TOKEN) return;
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.setItem(RESET_TOKEN_KEY, RESET_TOKEN);
+    })();
+
     const PRICE_MAP = {
       "ビーフ": 230,
       "メンチ": 380,
@@ -339,6 +688,17 @@
       "かにクリーム": 300,
       "かぼちゃ": 270,
       "常総牛": 630
+    };
+    const DEFAULT_COST_MAP = {
+      "ビーフ": 110,
+      "メンチ": 190,
+      "牛すじ": 140,
+      "和風だし": 90,
+      "明太クリーミー": 150,
+      "チーズ": 150,
+      "かにクリーム": 150,
+      "かぼちゃ": 120,
+      "常総牛": 320
     };
 
     const SET_DEFS = [
@@ -370,13 +730,145 @@
 
     let items = [];
     let fixedSetCounts = {};
+    let orderHistory = [];
+    let nextOrderNo = 1;
+    let undoStack = [];
+    let inventoryLedgerByMonth = {};
+    let monthlyFixedCostByMonth = {};
+    let costMap = { ...DEFAULT_COST_MAP };
+    let previousTotal = null;
+    let hadSuggestionPrev = false;
+
+    function pushUndoSnapshot() {
+      undoStack.push({
+        items: structuredClone(items),
+        fixedSetCounts: structuredClone(fixedSetCounts)
+      });
+      if (undoStack.length > 30) undoStack.shift();
+    }
+
+    function undoLastAction() {
+      const snapshot = undoStack.pop();
+      if (!snapshot) return;
+      items = snapshot.items;
+      fixedSetCounts = snapshot.fixedSetCounts;
+      render();
+    }
+
+    function saveState() {
+      const state = {
+        items,
+        fixedSetCounts,
+        orderHistory,
+        nextOrderNo,
+        inventoryLedgerByMonth,
+        monthlyFixedCostByMonth,
+        costMap
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getWebhookUrl() {
+      return localStorage.getItem(WEBHOOK_URL_KEY) || "";
+    }
+
+    function saveWebhookUrl() {
+      const input = document.getElementById("sheetWebhookUrl");
+      const url = (input.value || "").trim();
+      if (!url) {
+        alert("URLを入力してください。");
+        return;
+      }
+      if (!url.startsWith("https://script.google.com/")) {
+        if (!confirm("Google Apps ScriptのURL以外です。保存しますか？")) return;
+      }
+      localStorage.setItem(WEBHOOK_URL_KEY, url);
+      setSheetStatus("URLを保存しました。", false);
+    }
+
+    function setSheetStatus(message, isError) {
+      const status = document.getElementById("sheetStatus");
+      status.textContent = message;
+      status.style.color = isError ? "#b42332" : "#2f7d32";
+    }
+
+    async function postToWebhook(payload) {
+      const webhookUrl = getWebhookUrl();
+      if (!webhookUrl) {
+        throw new Error("送信先URLが未設定です。");
+      }
+      try {
+        const res = await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          throw new Error(`送信失敗: HTTP ${res.status}`);
+        }
+        try {
+          return await res.json();
+        } catch (e) {
+          return { ok: true, message: "response parsing skipped" };
+        }
+      } catch (primaryError) {
+        // iPhoneのブラウザではCORSで"Load failed"になることがあるため、
+        // no-corsで送信のみ実行し、保存結果はシート側で確認する。
+        await fetch(webhookUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        return { ok: true, message: "sent in no-cors mode (verify on sheet)" };
+      }
+    }
+
+    async function testSheetConnection() {
+      try {
+        setSheetStatus("接続テスト中...", false);
+        await postToWebhook({
+          action: "ping",
+          sentAt: new Date().toISOString(),
+          appVersion: APP_VERSION
+        });
+        setSheetStatus("接続OK: Apps Scriptと通信できました。", false);
+      } catch (e) {
+        setSheetStatus(`接続NG: ${e.message}`, true);
+      }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.items)) items = parsed.items;
+        if (parsed.fixedSetCounts && typeof parsed.fixedSetCounts === "object") fixedSetCounts = parsed.fixedSetCounts;
+        if (Array.isArray(parsed.orderHistory)) orderHistory = parsed.orderHistory;
+        if (Number.isInteger(parsed.nextOrderNo) && parsed.nextOrderNo > 0) nextOrderNo = parsed.nextOrderNo;
+        if (parsed.inventoryLedgerByMonth && typeof parsed.inventoryLedgerByMonth === "object") {
+          inventoryLedgerByMonth = parsed.inventoryLedgerByMonth;
+        }
+        if (parsed.monthlyFixedCostByMonth && typeof parsed.monthlyFixedCostByMonth === "object") {
+          monthlyFixedCostByMonth = parsed.monthlyFixedCostByMonth;
+        }
+        if (parsed.costMap && typeof parsed.costMap === "object") {
+          costMap = { ...DEFAULT_COST_MAP, ...parsed.costMap };
+        }
+      } catch (e) {
+        // 読み込み失敗時は初期値のまま継続
+      }
+    }
 
     function addItem(name, price) {
+      pushUndoSnapshot();
       items.push({ name, price });
       render();
     }
 
     function addSet(setName) {
+      pushUndoSnapshot();
       fixedSetCounts[setName] = (fixedSetCounts[setName] || 0) + 1;
       render();
     }
@@ -384,6 +876,7 @@
     function removeSet(setName) {
       const current = fixedSetCounts[setName] || 0;
       if (current <= 0) return;
+      pushUndoSnapshot();
       if (current === 1) {
         delete fixedSetCounts[setName];
       } else {
@@ -397,15 +890,161 @@
     }
 
     function resetAll() {
+      if (!confirm("現在の注文内容をクリアします。よろしいですか？")) return;
+      pushUndoSnapshot();
       items = [];
       fixedSetCounts = {};
+      render();
+    }
+
+    function resetDemoData() {
+      if (!confirm("履歴・在庫・原価などの保存データを全て初期化します。よろしいですか？")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      items = [];
+      fixedSetCounts = {};
+      orderHistory = [];
+      nextOrderNo = 1;
+      undoStack = [];
+      inventoryLedgerByMonth = {};
+      monthlyFixedCostByMonth = {};
+      costMap = { ...DEFAULT_COST_MAP };
+      previousTotal = null;
+      hadSuggestionPrev = false;
+      document.getElementById("cashInput").value = "";
+      showToast("テストデータをリセットしました");
       render();
     }
 
     function removeItem(name) {
       const idx = items.findIndex((item) => item.name === name);
       if (idx === -1) return;
+      pushUndoSnapshot();
       items.splice(idx, 1);
+      render();
+    }
+
+    function buildDisplaySummary() {
+      const count = buildCountMap();
+      const suggestedSetCounts = calcSuggestionSetCounts(count);
+      let fixedSetTotal = 0;
+      let singleTotal = 0;
+      const fixedSetGrouped = {};
+
+      for (const setDef of SET_DEFS) {
+        const qty = fixedSetCounts[setDef.name] || 0;
+        if (qty > 0) {
+          fixedSetGrouped[setDef.name] = qty;
+          fixedSetTotal += setDef.price * qty;
+        }
+      }
+
+      for (const [name, qty] of Object.entries(count)) {
+        singleTotal += (PRICE_MAP[name] || 0) * qty;
+      }
+
+      const grandTotal = fixedSetTotal + singleTotal;
+      return { count, suggestedSetCounts, fixedSetGrouped, grandTotal };
+    }
+
+    function calcOrderCostFromCountMap(countMap) {
+      let totalCost = 0;
+      for (const [name, qty] of Object.entries(countMap)) {
+        totalCost += (costMap[name] || 0) * qty;
+      }
+      return totalCost;
+    }
+
+    function updateChangeLabel(grandTotal) {
+      const input = document.getElementById("cashInput");
+      const changeEl = document.getElementById("change");
+      const cash = Number(input.value);
+      if (!cash || cash < 0) {
+        changeEl.textContent = "お釣り: -";
+        return;
+      }
+      const diff = cash - grandTotal;
+      if (diff < 0) {
+        changeEl.textContent = `不足: ${Math.abs(diff)}円`;
+        return;
+      }
+      changeEl.textContent = `お釣り: ${diff}円`;
+    }
+
+    function renderHistory() {
+      const historyEl = document.getElementById("history");
+      if (!orderHistory.length) {
+        historyEl.innerHTML = "まだ会計履歴はありません。";
+        return;
+      }
+      let html = "";
+      for (const row of orderHistory.slice(-20).reverse()) {
+        const setLines = (row.setSummary || []).map((line) => `${line}<br>`).join("");
+        const singleLines = (row.singleSummary || []).map((line) => `${line}<br>`).join("");
+        html += `<div class="history-item">
+          <div>#${row.orderNo} ${row.at || "-"} / 合計 ${row.total}円 / 粗利 ${row.grossProfit || 0}円</div>
+          <div class="history-group"><div class="history-title">【セット】</div>${setLines || "なし"}</div>
+          <div class="history-group"><div class="history-title">【単品】</div>${singleLines || "なし"}</div>
+        </div>`;
+      }
+      historyEl.innerHTML = html;
+    }
+
+    function buildSoldItemCounts(count) {
+      const sold = { ...count };
+      for (const setDef of SET_DEFS) {
+        const qty = fixedSetCounts[setDef.name] || 0;
+        if (qty <= 0) continue;
+        for (const [itemName, itemQty] of Object.entries(setDef.items)) {
+          sold[itemName] = (sold[itemName] || 0) + (itemQty * qty);
+        }
+      }
+      return sold;
+    }
+
+    function finalizeOrder() {
+      const { count, fixedSetGrouped, grandTotal } = buildDisplaySummary();
+      const hasAnyItem = Object.keys(count).length > 0 || Object.keys(fixedSetCounts).length > 0;
+      if (!hasAnyItem) {
+        alert("注文が空です。");
+        return;
+      }
+
+      const soldItemCounts = buildSoldItemCounts(count);
+      const orderCost = calcOrderCostFromCountMap(soldItemCounts);
+      const grossProfit = grandTotal - orderCost;
+      const setSummary = [];
+      const singleSummary = [];
+      for (const setDef of SET_DEFS) {
+        const qty = fixedSetGrouped[setDef.name] || 0;
+        if (qty > 0) setSummary.push(`${setDef.name} ×${qty}`);
+      }
+      for (const [name, qty] of Object.entries(count)) {
+        singleSummary.push(`${name} ×${qty}`);
+      }
+
+      const now = new Date();
+      const date = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
+      const time = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+      const at = `${date} ${time}`;
+      orderHistory.push({
+        orderNo: nextOrderNo,
+        at,
+        timestamp: now.toISOString(),
+        total: grandTotal,
+        summary: [...setSummary, ...singleSummary].join(" / "),
+        soldItemCounts,
+        setSummary,
+        singleSummary,
+        grossProfit
+      });
+      nextOrderNo += 1;
+      if (orderHistory.length > 200) orderHistory = orderHistory.slice(-200);
+
+      items = [];
+      fixedSetCounts = {};
+      document.getElementById("cashInput").value = "";
+      showToast("会計を確定しました");
+      playSuccessBurst();
       render();
     }
 
@@ -534,8 +1173,521 @@
       return regular;
     }
 
-    function render() {
+    function renderCostConfig() {
+      const wrap = document.getElementById("costConfig");
+      let html = "";
+      for (const productName of Object.keys(PRICE_MAP)) {
+        html += `<div class="cost-row"><span>${productName}</span><input class="stock-input" type="number" min="0" step="1" value="${costMap[productName] || 0}" onchange="updateCostMap('${productName}', this.value)" /></div>`;
+      }
+      wrap.innerHTML = html;
+    }
+
+    function updateCostMap(productName, value) {
+      costMap[productName] = parseSafeNumber(value);
+      render();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("appToast");
+      toast.textContent = message;
+      toast.classList.remove("show");
+      void toast.offsetWidth;
+      toast.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 1300);
+    }
+
+    function playSuccessBurst() {
+      const burst = document.getElementById("successBurst");
+      burst.classList.remove("show");
+      void burst.offsetWidth;
+      burst.classList.add("show");
+    }
+
+    function consumeSingleItemsForSet(setDef, times) {
+      for (let t = 0; t < times; t += 1) {
+        for (const [name, qty] of Object.entries(setDef.items)) {
+          for (let i = 0; i < qty; i += 1) {
+            const idx = items.findIndex((item) => item.name === name);
+            if (idx === -1) break;
+            items.splice(idx, 1);
+          }
+        }
+      }
+    }
+
+    function applySuggestedSets() {
       const count = buildCountMap();
+      const suggestedSetCounts = calcSuggestionSetCounts(count);
+      if (!Object.keys(suggestedSetCounts).length) return;
+      pushUndoSnapshot();
+      for (const [setName, qty] of Object.entries(suggestedSetCounts)) {
+        fixedSetCounts[setName] = (fixedSetCounts[setName] || 0) + qty;
+        const setDef = getSetDefByName(setName);
+        if (!setDef) continue;
+        consumeSingleItemsForSet(setDef, qty);
+      }
+      showToast("適用しました");
+      render();
+    }
+
+    function renderButtonStates(count) {
+      const itemButtons = document.querySelectorAll(".item-btn");
+      for (const button of itemButtons) {
+        const name = button.dataset.itemName;
+        const active = (count[name] || 0) > 0;
+        button.classList.toggle("selected", active);
+      }
+      const setButtons = document.querySelectorAll(".set-btn");
+      for (const button of setButtons) {
+        const setName = button.dataset.setName;
+        const active = (fixedSetCounts[setName] || 0) > 0;
+        button.classList.toggle("selected", active);
+      }
+    }
+
+    function renderSetButtons() {
+      const setButtons = document.querySelectorAll(".set-btn");
+      for (const button of setButtons) {
+        const setName = button.dataset.setName;
+        const setDef = getSetDefByName(setName);
+        if (!setDef) continue;
+        const regular = calcSetRegularPrice(setDef);
+        const saving = Math.max(0, regular - setDef.price);
+        button.innerHTML = `<span>${setDef.name}</span><span class="price">${setDef.price}円</span><span class="saving">${saving}円お得</span>`;
+      }
+    }
+
+    function getCurrentMonthString() {
+      const d = new Date();
+      return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}`;
+    }
+
+    function getTargetMonth() {
+      const monthInput = document.getElementById("targetMonth");
+      return monthInput.value || getCurrentMonthString();
+    }
+
+    function ensureMonthLedger(month) {
+      if (!inventoryLedgerByMonth[month]) {
+        inventoryLedgerByMonth[month] = {};
+      }
+      for (const productName of Object.keys(PRICE_MAP)) {
+        if (!inventoryLedgerByMonth[month][productName]) {
+          inventoryLedgerByMonth[month][productName] = {
+            opening: 0,
+            purchase: 0,
+            waste: 0,
+            unitCost: costMap[productName] || 0
+          };
+        }
+      }
+      if (typeof monthlyFixedCostByMonth[month] !== "number") {
+        monthlyFixedCostByMonth[month] = 0;
+      }
+    }
+
+    function parseSafeNumber(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n) || n < 0) return 0;
+      return Math.round(n * 100) / 100;
+    }
+
+    function updateLedgerValue(month, productName, field, value) {
+      ensureMonthLedger(month);
+      inventoryLedgerByMonth[month][productName][field] = parseSafeNumber(value);
+      render();
+    }
+
+    function calcMonthlyMetrics(month) {
+      ensureMonthLedger(month);
+      const monthLedger = inventoryLedgerByMonth[month];
+      const soldByProduct = {};
+      let monthlySales = 0;
+
+      for (const row of orderHistory) {
+        const monthKey = row.timestamp ? row.timestamp.slice(0, 7) : "";
+        if (monthKey !== month) continue;
+        monthlySales += Number(row.total) || 0;
+        if (!row.soldItemCounts || typeof row.soldItemCounts !== "object") continue;
+        for (const [name, qty] of Object.entries(row.soldItemCounts)) {
+          soldByProduct[name] = (soldByProduct[name] || 0) + (Number(qty) || 0);
+        }
+      }
+
+      const rows = [];
+      let totalCogs = 0;
+      let totalGrossProfit = 0;
+      let totalWasteCost = 0;
+      for (const productName of Object.keys(PRICE_MAP)) {
+        const l = monthLedger[productName];
+        const soldQty = soldByProduct[productName] || 0;
+        const available = l.opening + l.purchase;
+        const ending = available - soldQty - l.waste;
+        const digestionRate = l.opening > 0 ? (soldQty / l.opening) * 100 : 0;
+        const sales = soldQty * PRICE_MAP[productName];
+        const cogs = soldQty * l.unitCost;
+        const wasteCost = l.waste * l.unitCost;
+        const grossProfit = sales - cogs;
+        totalCogs += cogs;
+        totalGrossProfit += grossProfit;
+        totalWasteCost += wasteCost;
+        rows.push({
+          productName,
+          soldQty,
+          opening: l.opening,
+          purchase: l.purchase,
+          waste: l.waste,
+          ending,
+          digestionRate,
+          unitCost: l.unitCost,
+          sales,
+          cogs,
+          grossProfit
+        });
+      }
+
+      const fixedCost = monthlyFixedCostByMonth[month] || 0;
+      const operatingProfit = monthlySales - totalCogs - totalWasteCost - fixedCost;
+      return {
+        rows,
+        monthlySales,
+        totalCogs,
+        totalWasteCost,
+        totalGrossProfit,
+        fixedCost,
+        operatingProfit
+      };
+    }
+
+    function getMonthFromTimestamp(timestamp) {
+      if (!timestamp || typeof timestamp !== "string" || timestamp.length < 7) return "";
+      return timestamp.slice(0, 7);
+    }
+
+    function formatYen(value) {
+      return `${Math.round(value).toLocaleString("ja-JP")}円`;
+    }
+
+    function renderMonthlySection() {
+      const month = getTargetMonth();
+      ensureMonthLedger(month);
+      const monthlyFixedCostInput = document.getElementById("monthlyFixedCost");
+      monthlyFixedCostInput.value = monthlyFixedCostByMonth[month] || 0;
+
+      const metrics = calcMonthlyMetrics(month);
+      const kpiEl = document.getElementById("monthlyKpis");
+      kpiEl.innerHTML = `
+        <div class="kpi-card"><div class="label">売上</div><div class="value">${formatYen(metrics.monthlySales)}</div></div>
+        <div class="kpi-card"><div class="label">売上原価</div><div class="value">${formatYen(metrics.totalCogs)}</div></div>
+        <div class="kpi-card"><div class="label">廃棄原価</div><div class="value">${formatYen(metrics.totalWasteCost)}</div></div>
+        <div class="kpi-card"><div class="label">粗利</div><div class="value">${formatYen(metrics.totalGrossProfit)}</div></div>
+        <div class="kpi-card"><div class="label">営業利益</div><div class="value">${formatYen(metrics.operatingProfit)}</div></div>
+      `;
+
+      const rowsEl = document.getElementById("monthlyRows");
+      let rowsHtml = "";
+      for (const row of metrics.rows) {
+        rowsHtml += `
+          <tr>
+            <td>${row.productName}</td>
+            <td>${row.soldQty}</td>
+            <td><input class="stock-input" type="number" min="0" step="1" value="${row.opening}" onchange="updateLedgerValue('${month}', '${row.productName}', 'opening', this.value)" /></td>
+            <td><input class="stock-input" type="number" min="0" step="1" value="${row.purchase}" onchange="updateLedgerValue('${month}', '${row.productName}', 'purchase', this.value)" /></td>
+            <td><input class="stock-input" type="number" min="0" step="1" value="${row.waste}" onchange="updateLedgerValue('${month}', '${row.productName}', 'waste', this.value)" /></td>
+            <td>${row.ending}</td>
+            <td>${row.digestionRate.toFixed(1)}%</td>
+            <td><input class="stock-input" type="number" min="0" step="1" value="${row.unitCost}" onchange="updateLedgerValue('${month}', '${row.productName}', 'unitCost', this.value)" /></td>
+            <td>${Math.round(row.sales).toLocaleString("ja-JP")}</td>
+            <td>${Math.round(row.cogs).toLocaleString("ja-JP")}</td>
+            <td>${Math.round(row.grossProfit).toLocaleString("ja-JP")}</td>
+          </tr>
+        `;
+      }
+      rowsEl.innerHTML = rowsHtml;
+    }
+
+    function updateMonthlyFixedCost(value) {
+      const month = getTargetMonth();
+      ensureMonthLedger(month);
+      monthlyFixedCostByMonth[month] = parseSafeNumber(value);
+      render();
+    }
+
+    function daysInMonth(year, monthIndex0) {
+      return new Date(year, monthIndex0 + 1, 0).getDate();
+    }
+
+    function getWeekday(year, monthIndex0, day) {
+      return new Date(year, monthIndex0, day).getDay();
+    }
+
+    function isOpenDay(year, monthIndex0, day) {
+      const w = getWeekday(year, monthIndex0, day);
+      // 営業日: 木金土日
+      return w === 4 || w === 5 || w === 6 || w === 0;
+    }
+
+    function isHolidayLikePeak(year, monthIndex0, day) {
+      // デモ用: GWの混雑を想定（4/29-5/6）
+      const month = monthIndex0 + 1;
+      return (month === 4 && day >= 29) || (month === 5 && day <= 6);
+    }
+
+    function calcAverageUnitPrice() {
+      const distribution = {
+        "ビーフ": 0.24,
+        "メンチ": 0.2,
+        "牛すじ": 0.16,
+        "和風だし": 0.11,
+        "明太クリーミー": 0.09,
+        "チーズ": 0.07,
+        "かにクリーム": 0.05,
+        "かぼちゃ": 0.05,
+        "常総牛": 0.03
+      };
+      let avg = 0;
+      for (const [name, ratio] of Object.entries(distribution)) {
+        avg += (PRICE_MAP[name] || 0) * ratio;
+      }
+      return avg;
+    }
+
+    function buildDailySoldMap(totalUnits) {
+      const distribution = {
+        "ビーフ": 0.24,
+        "メンチ": 0.2,
+        "牛すじ": 0.16,
+        "和風だし": 0.11,
+        "明太クリーミー": 0.09,
+        "チーズ": 0.07,
+        "かにクリーム": 0.05,
+        "かぼちゃ": 0.05,
+        "常総牛": 0.03
+      };
+      const keys = Object.keys(distribution);
+      const soldMap = {};
+      let consumed = 0;
+      for (let i = 0; i < keys.length; i += 1) {
+        const name = keys[i];
+        if (i === keys.length - 1) {
+          soldMap[name] = totalUnits - consumed;
+          continue;
+        }
+        const qty = Math.floor(totalUnits * distribution[name]);
+        soldMap[name] = qty;
+        consumed += qty;
+      }
+      return soldMap;
+    }
+
+    function pickTargetSales(year, monthIndex0, day) {
+      if (isHolidayLikePeak(year, monthIndex0, day)) {
+        // 連休/GWの混雑日: 18万円以上
+        return 180000 + ((day % 4) * 12000);
+      }
+      const w = getWeekday(year, monthIndex0, day);
+      if (w === 4 || w === 5) {
+        // 木金（平日運用）: 2〜3万円
+        return 22000 + ((day % 3) * 4000);
+      }
+      // 土日: 7〜8万円
+      return 70000 + ((day % 3) * 5000);
+    }
+
+    function calcSalesFromSoldMap(soldMap) {
+      let total = 0;
+      for (const [name, qty] of Object.entries(soldMap)) {
+        total += (PRICE_MAP[name] || 0) * qty;
+      }
+      return total;
+    }
+
+    function calcCostFromSoldMap(soldMap) {
+      let total = 0;
+      for (const [name, qty] of Object.entries(soldMap)) {
+        total += (costMap[name] || 0) * qty;
+      }
+      return total;
+    }
+
+    function loadSubmissionSampleData() {
+      const month = getTargetMonth();
+      const [y, m] = month.split("-").map(Number);
+      if (!y || !m) {
+        alert("対象月を先に選択してください。");
+        return;
+      }
+      if (!confirm(`${month} に提出用サンプルデータを投入します。既存履歴に追加されます。続けますか？`)) return;
+
+      const monthIndex0 = m - 1;
+      const dayCount = daysInMonth(y, monthIndex0);
+      const avgPrice = calcAverageUnitPrice();
+      const productMonthlySold = {};
+      let inserted = 0;
+      for (let d = 1; d <= dayCount; d += 1) {
+        if (!isOpenDay(y, monthIndex0, d)) continue;
+        const targetSales = pickTargetSales(y, monthIndex0, d);
+        const totalUnits = Math.max(1, Math.round(targetSales / avgPrice));
+        const soldItemCounts = buildDailySoldMap(totalUnits);
+        for (const [name, qty] of Object.entries(soldItemCounts)) {
+          productMonthlySold[name] = (productMonthlySold[name] || 0) + qty;
+        }
+        const sales = calcSalesFromSoldMap(soldItemCounts);
+        const costs = calcCostFromSoldMap(soldItemCounts);
+        const date = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        const timestamp = `${date}T12:00:00+09:00`;
+        const singleSummary = Object.entries(soldItemCounts)
+          .filter(([, qty]) => qty > 0)
+          .map(([name, qty]) => `${name} ×${qty}`);
+
+        orderHistory.push({
+          orderNo: nextOrderNo,
+          at: `${date} 12:00:00`,
+          timestamp,
+          total: sales,
+          summary: singleSummary.join(" / "),
+          soldItemCounts,
+          setSummary: [],
+          singleSummary,
+          grossProfit: sales - costs
+        });
+        nextOrderNo += 1;
+        inserted += 1;
+      }
+
+      ensureMonthLedger(month);
+      for (const productName of Object.keys(PRICE_MAP)) {
+        const sold = productMonthlySold[productName] || 0;
+        inventoryLedgerByMonth[month][productName] = {
+          opening: Math.ceil(sold * 0.3),
+          purchase: Math.ceil(sold * 0.85),
+          waste: Math.ceil(sold * 0.03),
+          unitCost: costMap[productName] || 0
+        };
+      }
+      monthlyFixedCostByMonth[month] = 120000;
+      if (orderHistory.length > 1000) orderHistory = orderHistory.slice(-1000);
+      showToast(`提出用データを営業日${inserted}日分投入しました`);
+      render();
+    }
+
+    function escapeCsvValue(value) {
+      const s = String(value ?? "");
+      if (!s.includes(",") && !s.includes("\"") && !s.includes("\n")) return s;
+      return `"${s.replaceAll("\"", "\"\"")}"`;
+    }
+
+    function downloadMonthlyCsv() {
+      const month = getTargetMonth();
+      const metrics = calcMonthlyMetrics(month);
+      const header = ["月", "商品", "販売数", "期首在庫", "仕入数", "廃棄数", "理論在庫", "消化率(%)", "単位原価", "売上", "原価", "粗利"];
+      const lines = [header.join(",")];
+      for (const row of metrics.rows) {
+        lines.push([
+          month,
+          row.productName,
+          row.soldQty,
+          row.opening,
+          row.purchase,
+          row.waste,
+          row.ending,
+          row.digestionRate.toFixed(1),
+          row.unitCost,
+          Math.round(row.sales),
+          Math.round(row.cogs),
+          Math.round(row.grossProfit)
+        ].map(escapeCsvValue).join(","));
+      }
+      lines.push("");
+      lines.push(["売上", Math.round(metrics.monthlySales)].join(","));
+      lines.push(["売上原価", Math.round(metrics.totalCogs)].join(","));
+      lines.push(["廃棄原価", Math.round(metrics.totalWasteCost)].join(","));
+      lines.push(["固定費", Math.round(metrics.fixedCost)].join(","));
+      lines.push(["営業利益", Math.round(metrics.operatingProfit)].join(","));
+      const csvContent = "\uFEFF" + lines.join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `monthly_report_${month}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    async function sendSalesLogToSheet() {
+      try {
+        if (!orderHistory.length) {
+          alert("送信できる会計履歴がありません。");
+          return;
+        }
+        setSheetStatus("会計履歴を送信中...", false);
+        const payload = {
+          action: "upsertSalesLog",
+          sentAt: new Date().toISOString(),
+          appVersion: APP_VERSION,
+          rows: orderHistory.map((row) => ({
+            orderNo: row.orderNo,
+            at: row.at || "",
+            timestamp: row.timestamp || "",
+            month: getMonthFromTimestamp(row.timestamp),
+            total: row.total || 0,
+            summary: row.summary || "",
+            soldItemCounts: row.soldItemCounts || {}
+          }))
+        };
+        const result = await postToWebhook(payload);
+        setSheetStatus(`会計履歴を送信しました。件数: ${payload.rows.length}${result.message ? ` / ${result.message}` : ""}`, false);
+      } catch (e) {
+        setSheetStatus(`会計履歴送信NG: ${e.message}`, true);
+      }
+    }
+
+    async function sendMonthlyReportToSheet() {
+      try {
+        const month = getTargetMonth();
+        const metrics = calcMonthlyMetrics(month);
+        setSheetStatus(`${month}の月次集計を送信中...`, false);
+        const payload = {
+          action: "upsertMonthlyReport",
+          sentAt: new Date().toISOString(),
+          appVersion: APP_VERSION,
+          month,
+          summary: {
+            monthlySales: Math.round(metrics.monthlySales),
+            totalCogs: Math.round(metrics.totalCogs),
+            totalWasteCost: Math.round(metrics.totalWasteCost),
+            totalGrossProfit: Math.round(metrics.totalGrossProfit),
+            fixedCost: Math.round(metrics.fixedCost),
+            operatingProfit: Math.round(metrics.operatingProfit)
+          },
+          rows: metrics.rows.map((row) => ({
+            productName: row.productName,
+            soldQty: row.soldQty,
+            opening: row.opening,
+            purchase: row.purchase,
+            waste: row.waste,
+            ending: row.ending,
+            digestionRate: Number(row.digestionRate.toFixed(1)),
+            unitCost: row.unitCost,
+            sales: Math.round(row.sales),
+            cogs: Math.round(row.cogs),
+            grossProfit: Math.round(row.grossProfit)
+          }))
+        };
+        const result = await postToWebhook(payload);
+        setSheetStatus(`月次集計を送信しました。対象: ${month}${result.message ? ` / ${result.message}` : ""}`, false);
+      } catch (e) {
+        setSheetStatus(`月次送信NG: ${e.message}`, true);
+      }
+    }
+
+    function render() {
+      const { count, suggestedSetCounts, grandTotal } = buildDisplaySummary();
 
       let orderHTML = "";
       for (const setDef of SET_DEFS) {
@@ -549,54 +1701,36 @@
       }
       document.getElementById("order").innerHTML = orderHTML || "なし";
 
-      const { remainingSingles, total } = calcAutoSets(count);
-      const suggestedSetCounts = calcSuggestionSetCounts(count);
-      let fixedSetTotal = 0;
-      const combinedGrouped = {};
-
-      for (const setDef of SET_DEFS) {
-        const qty = fixedSetCounts[setDef.name] || 0;
-        if (qty > 0) {
-          combinedGrouped[setDef.name] = qty;
-          fixedSetTotal += setDef.price * qty;
-        }
-      }
-
-      for (const [setName, qty] of Object.entries(suggestedSetCounts)) {
-        combinedGrouped[setName] = (combinedGrouped[setName] || 0) + qty;
-      }
-
-      if (Object.keys(combinedGrouped).length === 0) {
+      if (Object.keys(suggestedSetCounts).length === 0) {
         document.getElementById("suggest").innerHTML = "（該当なし）";
       } else {
         let suggestHTML = "";
         let totalSaving = 0;
+        const hasSetNow = true;
         for (const setDef of SET_DEFS) {
-          const qty = combinedGrouped[setDef.name] || 0;
+          const qty = suggestedSetCounts[setDef.name] || 0;
           if (qty > 0) {
             const regularPrice = calcSetRegularPrice(setDef);
             const savingPerSet = Math.max(0, regularPrice - setDef.price);
             const savingTotal = savingPerSet * qty;
             totalSaving += savingTotal;
-
-            suggestHTML += `<div class="set-row"><span class="set-chip ${setDef.className}">${setDef.name}</span><span>（${setDef.price}円）`;
-            if (qty > 1) {
-              suggestHTML += ` ×${qty}`;
-            }
-            if (savingTotal > 0) {
-              suggestHTML += ` ・${savingTotal}円お得`;
-            }
-            suggestHTML += "</span></div>";
+            suggestHTML += `<div class="set-row"><span class="set-chip ${setDef.className}">${setDef.name}</span><span>この組み合わせなら${setDef.name}で${savingTotal}円お得です</span></div>`;
           }
         }
-        if (totalSaving > 0) {
-          suggestHTML += `<div class="subtle">セット合計で ${totalSaving}円お得</div>`;
-        }
+        suggestHTML += `<div class="set-row"><button class="primary-btn mini-btn" onclick="applySuggestedSets()">自動適用しますか？</button></div>`;
+        suggestHTML += `<div class="subtle">適用候補の合計お得額: ${totalSaving}円</div>`;
         document.getElementById("suggest").innerHTML = suggestHTML.trim();
+        if (!hadSuggestionPrev && hasSetNow) {
+          const suggestEl = document.getElementById("suggest");
+          suggestEl.classList.remove("flash");
+          void suggestEl.offsetWidth;
+          suggestEl.classList.add("flash");
+        }
       }
+      hadSuggestionPrev = Object.keys(suggestedSetCounts).length > 0;
 
       let singleHTML = "";
-      for (const [name, qty] of Object.entries(remainingSingles)) {
+      for (const [name, qty] of Object.entries(count)) {
         if (qty > 0) {
           singleHTML += `${name} ×${qty}<br>`;
         }
@@ -607,8 +1741,25 @@
         document.getElementById("singleItems").innerHTML = "";
       }
 
-      const grandTotal = fixedSetTotal + total;
-      document.getElementById("total").textContent = `${grandTotal}円`;
+      const totalEl = document.getElementById("total");
+      totalEl.textContent = `${grandTotal}円`;
+      if (previousTotal !== null && previousTotal !== grandTotal) {
+        totalEl.classList.remove("total-pop");
+        void totalEl.offsetWidth;
+        totalEl.classList.add("total-pop");
+      }
+      previousTotal = grandTotal;
+
+      const soldItemCounts = buildSoldItemCounts(count);
+      const orderCost = calcOrderCostFromCountMap(soldItemCounts);
+      const orderGross = grandTotal - orderCost;
+      document.getElementById("orderProfit").textContent = `売上 ${grandTotal}円 / 原価 ${Math.round(orderCost)}円 / 粗利 ${Math.round(orderGross)}円`;
+      updateChangeLabel(grandTotal);
+      renderHistory();
+      renderButtonStates(count);
+      renderCostConfig();
+      renderMonthlySection();
+      saveState();
     }
 
     // 保存後に自動リロードされるよう、index.htmlの更新時刻を監視する。
@@ -630,6 +1781,13 @@
       }, 1000);
     })();
 
+    renderSetButtons();
+    loadState();
+    document.getElementById("targetMonth").value = getCurrentMonthString();
+    document.getElementById("sheetWebhookUrl").value = getWebhookUrl();
+    document.getElementById("cashInput").addEventListener("input", render);
+    document.getElementById("targetMonth").addEventListener("change", render);
+    document.getElementById("monthlyFixedCost").addEventListener("input", (e) => updateMonthlyFixedCost(e.target.value));
     render();
   </script>
   </div>
