@@ -1,0 +1,24 @@
+# config_real.py.example — config_real.py のテンプレート
+#
+# このファイルは GitHub に公開します（ダミー値）。
+# 実際に使う場合は .example を外して config_real.py にし、
+# 商品名・価格を実際の値に書き換えてください。
+#
+# .gitignore に config_real.py が追加されていることを確認してから使用してください。
+
+REAL_CONFIG = {
+    "title": "キッチンカー向け｜セット提案ツール",
+    "mode_label": "実運用",
+
+    # 商品名: 販売価格（実際の値に書き換えてください）
+    "menu": {
+        "商品A": 000,
+        "商品B": 000,
+        "商品C": 000,
+    },
+
+    # セット定義（set_price=None で単品合計を使用）
+    "sets": {
+        "セットA": {"items": ["商品A", "商品B"], "set_price": None, "discount": 0},
+    },
+}
