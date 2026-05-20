@@ -2,1794 +2,807 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>キッチンカー向け｜セット提案＆合計計算ツール</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>キッチンカー向け 管理ツール（デモ版）</title>
   <style>
-    html, body {
-      height: 100%;
-      overscroll-behavior: none;
+    :root {
+      --primary: #2563eb;
+      --primary-d: #1d4ed8;
+      --ok: #059669;
+      --warn: #d97706;
+      --danger: #dc2626;
+      --bg: #f3f4f6;
+      --card: #fff;
+      --border: #e5e7eb;
+      --text: #111827;
+      --sub: #6b7280;
     }
-
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      background: #f3f3f3;
-      color: #222;
-      overflow: hidden;
-    }
-
-    .app {
-      height: 100dvh;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    h1 {
-      font-size: 28px;
-      margin-bottom: 24px;
-    }
-
-    h2 {
-      font-size: 22px;
-      margin: 28px 0 14px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .set-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    button {
-      padding: 16px 12px;
-      border-radius: 12px;
-      border: 1px solid #cfcfcf;
-      background: #f8f8f8;
-      cursor: pointer;
-      font-size: 16px;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .btn-2line {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      line-height: 1.2;
-      gap: 4px;
-      color: #007aff;
-    }
-
-    .btn-2line .price {
-      font-size: 14px;
-      color: #007aff;
-      font-weight: 600;
-    }
-
-    .btn-2line .saving {
-      font-size: 12px;
-      color: #b42332;
-      font-weight: 700;
-    }
-
-    .section {
-      margin-top: 28px;
-    }
-
-    .box {
-      line-height: 1.9;
-      font-size: 18px;
-      white-space: normal;
-    }
-
-    .total {
-      font-size: 32px;
-      font-weight: bold;
-      margin-top: 8px;
-      color: #0a58ca;
-      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-    }
-    .total-pop {
-      animation: totalPop 240ms ease-out;
-    }
-    @keyframes totalPop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.12); color: #084298; }
-      100% { transform: scale(1); }
-    }
-
-    .profit-line {
-      font-size: 15px;
-      margin-top: 6px;
-      color: #444;
-    }
-
-    .item-btn.selected,
-    .set-btn.selected {
-      border-color: #0d6efd;
-      background: #eaf3ff;
-      box-shadow: inset 0 0 0 1px #0d6efd;
-    }
-
-    .suggest-box.flash {
-      animation: suggestFlash 320ms ease-out;
-    }
-    @keyframes suggestFlash {
-      0% { background: #fffdf4; }
-      100% { background: transparent; }
-    }
-
-    .actions-wrap {
-      margin-top: 18px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .primary-btn {
-      background: #0d6efd;
-      border-color: #0a58ca;
-      color: #fff;
-      font-weight: 700;
-    }
-
-    .warn-btn {
-      background: #fff4e6;
-      border-color: #f0c084;
-      color: #9a5a10;
-    }
-
-    .payment-wrap {
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .payment-wrap input {
-      font-size: 18px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid #cfcfcf;
-      width: 140px;
-      box-sizing: border-box;
-      background: #fff;
-    }
-
-    .history-box {
-      max-height: 190px;
-      overflow-y: auto;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 8px;
-      line-height: 1.6;
-      font-size: 14px;
-    }
-
-    .history-item {
-      border-bottom: 1px dashed #ddd;
-      padding: 4px 0;
-    }
-
-    .history-item:last-child {
-      border-bottom: none;
-    }
-
-    .month-tools {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .month-tools input {
-      font-size: 16px;
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid #cfcfcf;
-      background: #fff;
-    }
-
-    .table-scroll {
-      overflow-x: auto;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 6px;
-      margin-top: 8px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      min-width: 900px;
-    }
-
-    th,
-    td {
-      border-bottom: 1px solid #eee;
-      padding: 6px;
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    th:first-child,
-    td:first-child {
-      text-align: left;
-    }
-
-    .stock-input {
-      width: 80px;
-      font-size: 14px;
-      padding: 4px 6px;
-      border-radius: 6px;
-      border: 1px solid #cfcfcf;
-      text-align: right;
-      box-sizing: border-box;
-    }
-    .cost-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 8px;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 8px;
-    }
-    .cost-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-    }
-
-    .history-group {
-      margin: 4px 0;
-      padding-left: 8px;
-      border-left: 3px solid #eee;
-    }
-    .history-title {
-      font-weight: 700;
-      font-size: 12px;
-      color: #444;
-      margin: 2px 0;
-    }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%) translateY(20px);
-      background: rgba(34, 34, 34, 0.92);
-      color: #fff;
-      font-size: 13px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 9999;
-      transition: opacity 180ms ease, transform 180ms ease;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .success-burst {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 9998;
-      opacity: 0;
-      background: radial-gradient(circle at 50% 55%, rgba(47, 125, 50, 0.18) 0%, rgba(47, 125, 50, 0.08) 24%, rgba(47, 125, 50, 0) 55%);
-    }
-
-    .success-burst.show {
-      animation: successBurst 520ms ease-out;
-    }
-
-    @keyframes successBurst {
-      0% { opacity: 0; transform: scale(0.96); }
-      30% { opacity: 1; transform: scale(1.02); }
-      100% { opacity: 0; transform: scale(1.08); }
-    }
-
-    .kpi {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 8px;
-    }
-
-    .kpi-card {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 8px;
-    }
-
-    .kpi-card .label {
-      font-size: 12px;
-      color: #666;
-    }
-
-    .kpi-card .value {
-      font-size: 20px;
-      font-weight: 700;
-      margin-top: 4px;
-    }
-
-    .integration-box {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 10px;
-      margin-top: 8px;
-    }
-
-    .integration-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-
-    .integration-row input {
-      flex: 1;
-      min-width: 240px;
-      font-size: 14px;
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid #cfcfcf;
-      background: #fff;
-      box-sizing: border-box;
-    }
-
-    .subtle {
-      color: #666;
-    }
-
-    .order-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .mini-btn {
-      padding: 6px 10px;
-      font-size: 14px;
-      border-radius: 8px;
-    }
-
-    .set-row {
-      margin-bottom: 8px;
-    }
-
-    .set-chip {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 999px;
-      font-size: 15px;
-      font-weight: 700;
-      border: 1px solid transparent;
-      margin-right: 8px;
-    }
-
-    .set-otoku {
-      background: #ffe9ea;
-      color: #b42332;
-      border-color: #f7bcc1;
-    }
-
-    .set-4ten {
-      background: #e8f3ff;
-      color: #165ea8;
-      border-color: #b9d8f7;
-    }
-
-    .set-omiyage {
-      background: #e9f9ef;
-      color: #1f7a44;
-      border-color: #bdeacb;
-    }
-
-    .set-3ten {
-      background: #fff4e6;
-      color: #9a5a10;
-      border-color: #f6d6ad;
-    }
-
-    @media (max-width: 640px) {
-      .app {
-        padding: 8px;
-        height: 100dvh;
-        overflow-y: auto;
-      }
-
-      h1 {
-        grid-column: 1 / -1;
-        font-size: 16px;
-        margin: 0;
-      }
-
-      h2 {
-        font-size: 14px;
-        margin: 0 0 4px;
-      }
-
-      .section {
-        margin-top: 0;
-        min-height: 0;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .grid {
-        gap: 6px;
-        margin-bottom: 0;
-      }
-
-      .grid button {
-        min-height: 64px;
-      }
-
-      .set-grid {
-        gap: 6px;
-        margin-bottom: 0;
-      }
-
-      button {
-        padding: 8px 6px;
-        font-size: 12px;
-        border-radius: 8px;
-      }
-
-      .btn-2line {
-        gap: 2px;
-      }
-
-      .btn-2line .price {
-        font-size: 11px;
-      }
-
-      .btn-2line .saving {
-        font-size: 10px;
-      }
-
-      .grid button:not(.btn-2line) {
-        font-size: 11px;
-        line-height: 1.2;
-      }
-
-      .mini-btn {
-        padding: 4px 6px;
-        font-size: 11px;
-      }
-
-      .order-row {
-        margin-bottom: 4px;
-        gap: 6px;
-      }
-
-      .box {
-        font-size: 12px;
-        line-height: 1.45;
-      }
-
-      .total {
-        font-size: 20px;
-        margin-top: 0;
-      }
-
-      .actions-wrap {
-        margin-top: 0;
-      }
-
-      .payment-wrap input {
-        font-size: 14px;
-        width: 120px;
-      }
-
-      .month-tools input {
-        font-size: 12px;
-      }
-
-      .stock-input {
-        width: 68px;
-        font-size: 12px;
-      }
-
-      .integration-row input {
-        min-width: 160px;
-      }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; background: var(--bg); color: var(--text); }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 16px 12px 60px; }
+    h1 { font-size: 18px; font-weight: 700; line-height: 1.4; margin-bottom: 2px; }
+    h2 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+    .demo-badge { display: inline-block; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: 6px; font-size: 12px; font-weight: 700; padding: 2px 10px; margin-bottom: 8px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+
+    /* タブ */
+    .tabs { display: flex; gap: 4px; background: var(--bg); border-radius: 10px; padding: 4px; margin-bottom: 16px; }
+    .tab { flex: 1; padding: 10px 4px; text-align: center; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; color: var(--sub); border: none; background: transparent; }
+    .tab.active { background: var(--card); color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* 商品グリッド */
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+    .product-btn { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 6px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .product-btn:hover { border-color: var(--primary); background: #EFF6FF; }
+    .product-btn:active { background: #DBEAFE; }
+    .p-name { font-size: 14px; font-weight: 700; }
+    .p-price { font-size: 12px; color: var(--sub); }
+
+    /* セット情報ボックス */
+    .set-info-box { background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 10px; padding: 10px 14px; margin-top: 12px; }
+    .set-info-title { font-size: 11px; font-weight: 700; color: #065F46; margin-bottom: 8px; letter-spacing: .04em; }
+    .set-info-row { display: flex; align-items: baseline; gap: 6px; padding: 3px 0; font-size: 12px; color: #047857; border-top: 0.5px solid #BBF7D0; }
+    .set-info-row:first-of-type { border-top: none; }
+    .set-info-name { font-weight: 700; min-width: 88px; }
+    .set-info-contents { flex: 1; }
+    .set-info-price { font-weight: 700; white-space: nowrap; }
+    .set-info-disc { color: var(--ok); white-space: nowrap; }
+
+    /* セクションラベル */
+    .sec-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; color: var(--sub); border-bottom: 0.5px solid var(--border); padding-bottom: 6px; margin: 14px 0 8px; }
+    .sec-label:first-child { margin-top: 0; }
+
+    /* 適用済みセット行 */
+    .applied-row { display: flex; align-items: flex-start; gap: 10px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 10px 12px; margin-bottom: 6px; animation: fadeIn .2s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+    .check-icon { font-size: 15px; color: var(--ok); flex-shrink: 0; margin-top: 2px; }
+    .applied-info { flex: 1; min-width: 0; }
+    .applied-name { font-size: 14px; font-weight: 700; color: var(--primary); }
+    .applied-detail { font-size: 11px; color: var(--sub); margin-top: 2px; }
+    .applied-saving { font-size: 11px; color: var(--ok); font-weight: 600; }
+    .applied-price { font-size: 14px; font-weight: 700; color: var(--primary); min-width: 62px; text-align: right; flex-shrink: 0; }
+
+    /* 残り単品行 */
+    .order-row { display: flex; align-items: center; gap: 8px; padding: 8px 2px; }
+    .order-row + .order-row { border-top: 0.5px solid #f3f4f6; }
+    .order-name { flex: 1; font-size: 14px; font-weight: 600; }
+    .order-price { font-size: 13px; color: var(--sub); min-width: 54px; text-align: right; }
+    .qty-ctrl { display: flex; align-items: center; gap: 6px; }
+    .qty-btn { width: 28px; height: 28px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--card); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .qty-num { min-width: 20px; text-align: center; font-weight: 700; }
+
+    /* 割引・合計 */
+    .discount-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+    .discount-label { font-size: 13px; color: var(--ok); font-weight: 600; }
+    .discount-val { font-size: 14px; font-weight: 700; color: var(--ok); }
+    .total-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--border); }
+    .total-label { font-size: 14px; color: var(--sub); }
+    .total-val { font-size: 22px; font-weight: 700; color: var(--primary); }
+
+    /* 復唱補助 */
+    .recite-box { background: #FFFBEB; border: 1.5px solid #FCD34D; border-radius: 10px; padding: 12px 14px; margin-top: 10px; }
+    .recite-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; color: #92400E; margin-bottom: 6px; }
+    .recite-text { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.75; }
+
+    /* 現金会計 */
+    .cash-total-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 12px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+    .cash-total-label { font-size: 13px; color: var(--sub); }
+    .cash-total-val { font-size: 20px; font-weight: 700; color: var(--text); }
+    .received-disp { background: var(--bg); border: 2px solid var(--primary); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; }
+    .received-label { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 4px; }
+    .received-val { font-size: 32px; font-weight: 700; color: var(--text); text-align: right; letter-spacing: 1px; min-height: 40px; }
+    .quick-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+    .quick-btn { background: #EFF6FF; color: var(--primary); border: 1.5px solid #BFDBFE; border-radius: 10px; padding: 8px 4px; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; }
+    .quick-btn:active { background: #DBEAFE; }
+    .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .key-btn { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 16px 8px; font-size: 20px; font-weight: 700; cursor: pointer; text-align: center; color: var(--text); transition: background .1s; }
+    .key-btn:active { background: var(--bg); }
+    .key-btn.key-clear { background: #FEE2E2; color: var(--danger); border-color: #FECACA; font-size: 16px; }
+    .change-disp { background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 12px; display: none; }
+    .change-label { font-size: 13px; color: var(--sub); }
+    .change-val { font-size: 32px; font-weight: 700; color: var(--ok); }
+    .btn-full { width: 100%; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; border: none; cursor: pointer; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-d); }
+    .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); cursor: pointer; }
+
+    /* 履歴 */
+    .history-list { display: flex; flex-direction: column; gap: 8px; }
+    .history-item { background: var(--bg); border-radius: 10px; padding: 12px; }
+    .history-head { display: flex; justify-content: space-between; font-size: 12px; color: var(--sub); margin-bottom: 5px; }
+    .history-sets { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
+    .history-remaining { font-size: 12px; color: var(--sub); margin-bottom: 2px; }
+    .history-foot { display: flex; justify-content: flex-end; align-items: baseline; gap: 8px; margin-top: 4px; }
+    .history-total { font-size: 15px; font-weight: 700; }
+    .history-disc { font-size: 12px; color: var(--ok); }
+
+    /* ランキング */
+    .rank-list { display: flex; flex-direction: column; gap: 6px; }
+    .rank-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--bg); border-radius: 8px; }
+    .rank-num { font-size: 13px; font-weight: 700; color: var(--sub); min-width: 20px; text-align: center; }
+    .rank-name { flex: 1; font-size: 13px; font-weight: 600; }
+    .rank-count { font-size: 14px; font-weight: 700; color: var(--primary); }
+
+    /* 月次管理 */
+    .monthly-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .monthly-table th { background: var(--bg); padding: 8px; text-align: center; border: 1px solid var(--border); font-weight: 700; font-size: 12px; }
+    .monthly-table td { padding: 8px; text-align: center; border: 1px solid var(--border); }
+    .monthly-table td input { width: 60px; border: 1px solid var(--border); border-radius: 6px; padding: 4px; text-align: center; font-size: 13px; }
+    .monthly-table td.result { font-weight: 700; }
+    .monthly-table td.profit { color: var(--ok); }
+    .monthly-table td.loss { color: var(--danger); }
+
+    /* 原価設定 */
+    .cost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .cost-item { background: var(--bg); border-radius: 10px; padding: 10px; display: flex; align-items: center; gap: 8px; }
+    .cost-name { flex: 1; font-size: 13px; font-weight: 600; }
+    .cost-input { width: 70px; border: 1px solid var(--border); border-radius: 6px; padding: 4px 6px; text-align: right; font-size: 13px; }
+
+    /* GAS */
+    .gas-input { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-bottom: 10px; outline: none; }
+    .gas-input:focus { border-color: var(--primary); }
+    .status-msg { font-size: 13px; padding: 10px 14px; border-radius: 10px; margin-top: 8px; display: none; }
+    .status-ok { background: #F0FDF4; color: var(--ok); }
+    .status-err { background: #FEF2F2; color: var(--danger); }
+    .empty { text-align: center; padding: 24px; color: var(--sub); font-size: 14px; }
+
+    @media(max-width:480px) {
+      .cost-grid { grid-template-columns: 1fr; }
+      .product-grid { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-  <h1>キッチンカー向け｜セット提案＆合計計算ツール</h1>
+<div class="wrap">
+  <div class="demo-badge">DEMO — サンプルデータ使用</div>
+  <h1>注文確認と会計の手間を減らす<br>キッチンカー向け管理ツール</h1>
+  <p style="font-size:13px;color:var(--sub);margin-bottom:16px">商品タップ → セット自動適用・復唱テキスト生成 → 会計確定まで一画面</p>
 
-  <div class="section">
-    <h2>商品を選択</h2>
-    <div class="grid">
-      <button class="btn-2line item-btn" data-item-name="ビーフ" onclick="addItem('ビーフ', 230)"><span>ビーフ</span><span class="price">230円</span></button>
-      <button class="btn-2line item-btn" data-item-name="メンチ" onclick="addItem('メンチ', 380)"><span>メンチ</span><span class="price">380円</span></button>
-      <button class="btn-2line item-btn" data-item-name="牛すじ" onclick="addItem('牛すじ', 300)"><span>牛すじ</span><span class="price">300円</span></button>
-
-      <button class="btn-2line item-btn" data-item-name="和風だし" onclick="addItem('和風だし', 180)"><span>和風だし</span><span class="price">180円</span></button>
-      <button class="item-btn" data-item-name="明太クリーミー" onclick="addItem('明太クリーミー', 300)">明太クリーミー 300円</button>
-      <button class="btn-2line item-btn" data-item-name="チーズ" onclick="addItem('チーズ', 300)"><span>チーズ</span><span class="price">300円</span></button>
-
-      <button class="btn-2line item-btn" data-item-name="かにクリーム" onclick="addItem('かにクリーム', 300)"><span>かにクリーム</span><span class="price">300円</span></button>
-      <button class="btn-2line item-btn" data-item-name="かぼちゃ" onclick="addItem('かぼちゃ', 270)"><span>かぼちゃ</span><span class="price">270円</span></button>
-      <button class="btn-2line item-btn" data-item-name="常総牛" onclick="addItem('常総牛', 630)"><span>常総牛</span><span class="price">630円</span></button>
-    </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('order')">注文・会計</button>
+    <button class="tab" onclick="switchTab('history')">履歴・集計</button>
+    <button class="tab" onclick="switchTab('monthly')">月次管理</button>
+    <button class="tab" onclick="switchTab('settings')">設定</button>
   </div>
 
-  <div class="section">
-    <h2>セットを追加（固定）</h2>
-    <div class="set-grid">
-      <button class="btn-2line set-btn" data-set-name="お得セット" onclick="addSet('お得セット')"></button>
-      <button class="btn-2line set-btn" data-set-name="4点セット" onclick="addSet('4点セット')"></button>
-      <button class="btn-2line set-btn" data-set-name="お土産セット" onclick="addSet('お土産セット')"></button>
-      <button class="btn-2line set-btn" data-set-name="3点セット" onclick="addSet('3点セット')"></button>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>注文内容</h2>
-    <div id="order" class="box subtle">なし</div>
-  </div>
-
-  <div class="section">
-    <h2>セット提案</h2>
-    <div id="suggest" class="box subtle suggest-box">（該当なし）</div>
-    <div id="singleItems" class="box subtle"></div>
-  </div>
-
-  <div class="section">
-    <h2>合計</h2>
-    <div id="total" class="total">0円</div>
-    <div id="orderProfit" class="profit-line">売上 0円 / 原価 0円 / 粗利 0円</div>
-  </div>
-
-  <div class="section">
-    <h2>現金会計</h2>
-    <div class="payment-wrap">
-      <label for="cashInput">お預かり</label>
-      <input id="cashInput" type="number" inputmode="numeric" min="0" step="10" placeholder="例: 2000" />
-      <span id="change" class="box subtle">お釣り: -</span>
-    </div>
-  </div>
-
-  <div class="actions-wrap">
-    <button class="primary-btn" onclick="finalizeOrder()">会計確定</button>
-    <button class="warn-btn" onclick="undoLastAction()">1手戻す</button>
-    <button onclick="resetAll()">リセット</button>
-    <button class="warn-btn" onclick="resetDemoData()">テストデータ全リセット</button>
-  </div>
-
-  <div class="section">
-    <h2>会計履歴（直近20件）</h2>
-    <div id="history" class="history-box subtle">まだ会計履歴はありません。</div>
-  </div>
-
-  <div class="section">
-    <h2>月次管理（在庫・消化率・利益）</h2>
-    <div class="month-tools">
-      <label for="targetMonth">対象月</label>
-      <input id="targetMonth" type="month" />
-      <label for="monthlyFixedCost">固定費(任意)</label>
-      <input id="monthlyFixedCost" type="number" min="0" step="100" placeholder="0" />
-      <button class="warn-btn" onclick="loadSubmissionSampleData()">提出用サンプル投入</button>
-      <button onclick="downloadMonthlyCsv()">月次CSV出力</button>
-    </div>
-
-    <div class="kpi" id="monthlyKpis"></div>
-
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>商品</th>
-            <th>販売数</th>
-            <th>期首在庫</th>
-            <th>仕入数</th>
-            <th>廃棄数</th>
-            <th>理論在庫</th>
-            <th>消化率</th>
-            <th>単位原価</th>
-            <th>売上</th>
-            <th>原価</th>
-            <th>粗利</th>
-          </tr>
-        </thead>
-        <tbody id="monthlyRows"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>原価設定（商品別）</h2>
-    <div id="costConfig" class="cost-grid"></div>
-  </div>
-
-  <div class="section">
-    <h2>スプレッドシート連携</h2>
-    <div class="integration-box">
-      <div class="integration-row">
-        <label for="sheetWebhookUrl">Apps Script WebアプリURL</label>
-        <input id="sheetWebhookUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec" />
+  <!-- 注文タブ -->
+  <div id="tab-order" class="panel active">
+    <div class="card">
+      <h2>商品を選ぶ</h2>
+      <div class="product-grid" id="product-grid"></div>
+      <div class="set-info-box">
+        <div class="set-info-title">固定セット（条件を満たすと自動適用されます）</div>
+        <div id="set-info-rows"></div>
       </div>
-      <div class="integration-row">
-        <button onclick="saveWebhookUrl()">URL保存</button>
-        <button onclick="testSheetConnection()">接続テスト</button>
-        <button class="primary-btn" onclick="sendSalesLogToSheet()">会計履歴を送信</button>
-        <button class="primary-btn" onclick="sendMonthlyReportToSheet()">月次集計を送信</button>
+    </div>
+
+    <div class="card">
+      <h2>注文内容</h2>
+      <div id="order-body">
+        <div class="empty">商品をタップして追加してください</div>
       </div>
-      <div id="sheetStatus" class="subtle">未接続</div>
+      <div id="discount-row" class="discount-row" style="display:none">
+        <span class="discount-label">合計割引</span>
+        <span id="discount-val" class="discount-val">−¥0</span>
+      </div>
+      <div class="total-row">
+        <span class="total-label">合計</span>
+        <span class="total-val" id="total-disp">¥0</span>
+      </div>
+      <div class="recite-box" id="recite-box" style="display:none">
+        <div class="recite-label">復唱</div>
+        <div class="recite-text" id="recite-text"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>現金会計</h2>
+      <div class="cash-total-row">
+        <span class="cash-total-label">合計金額</span>
+        <span class="cash-total-val" id="amount-disp">¥0</span>
+      </div>
+      <div class="received-disp">
+        <div class="received-label">お預かり金額</div>
+        <div class="received-val" id="received-disp">—</div>
+      </div>
+      <div class="quick-btns">
+        <button class="quick-btn" onclick="setReceived(500)">¥500</button>
+        <button class="quick-btn" onclick="setReceived(1000)">¥1,000</button>
+        <button class="quick-btn" onclick="setReceived(5000)">¥5,000</button>
+        <button class="quick-btn" onclick="setReceived(10000)">¥10,000</button>
+      </div>
+      <div class="keypad">
+        <button class="key-btn" onclick="keypadPress('7')">7</button>
+        <button class="key-btn" onclick="keypadPress('8')">8</button>
+        <button class="key-btn" onclick="keypadPress('9')">9</button>
+        <button class="key-btn" onclick="keypadPress('4')">4</button>
+        <button class="key-btn" onclick="keypadPress('5')">5</button>
+        <button class="key-btn" onclick="keypadPress('6')">6</button>
+        <button class="key-btn" onclick="keypadPress('1')">1</button>
+        <button class="key-btn" onclick="keypadPress('2')">2</button>
+        <button class="key-btn" onclick="keypadPress('3')">3</button>
+        <button class="key-btn" onclick="keypadPress('00')">00</button>
+        <button class="key-btn" onclick="keypadPress('0')">0</button>
+        <button class="key-btn key-clear" onclick="keypadPress('del')">⌫</button>
+      </div>
+      <div class="change-disp" id="change-disp">
+        <div class="change-label">お釣り</div>
+        <div class="change-val" id="change-val">¥0</div>
+      </div>
+      <button class="btn-full btn-primary" onclick="confirmOrder()" style="margin-bottom:8px">会計確定</button>
+      <button class="btn-full btn-outline" onclick="clearOrder()">注文をリセット</button>
     </div>
   </div>
-  <div id="appToast" class="toast"></div>
-  <div id="successBurst" class="success-burst"></div>
 
-  <script>
-    const APP_VERSION = "2026-04-27-8";
-    const STORAGE_KEY = "kitchencar_pos_state_v1";
-    const WEBHOOK_URL_KEY = "kitchencar_sheet_webhook_url_v1";
-    const RESET_TOKEN_KEY = "kitchencar_reset_token_v1";
-    const RESET_TOKEN = "reset-2026-04-27-b";
-
-    // スマホの強いキャッシュ対策: バージョン更新時は1回だけ強制再読込する。
-    (function ensureLatestBuild() {
-      const key = "otsuri_app_version";
-      const saved = localStorage.getItem(key);
-      if (saved === APP_VERSION) return;
-      localStorage.setItem(key, APP_VERSION);
-      const url = new URL(window.location.href);
-      url.searchParams.set("v", APP_VERSION);
-      window.location.replace(url.toString());
-    })();
-
-    // 提出前の試験入力を一度だけ初期化する。
-    (function resetTrialDataOnce() {
-      const done = localStorage.getItem(RESET_TOKEN_KEY);
-      if (done === RESET_TOKEN) return;
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.setItem(RESET_TOKEN_KEY, RESET_TOKEN);
-    })();
-
-    const PRICE_MAP = {
-      "ビーフ": 230,
-      "メンチ": 380,
-      "牛すじ": 300,
-      "和風だし": 180,
-      "明太クリーミー": 300,
-      "チーズ": 300,
-      "かにクリーム": 300,
-      "かぼちゃ": 270,
-      "常総牛": 630
-    };
-    const DEFAULT_COST_MAP = {
-      "ビーフ": 110,
-      "メンチ": 190,
-      "牛すじ": 140,
-      "和風だし": 90,
-      "明太クリーミー": 150,
-      "チーズ": 150,
-      "かにクリーム": 150,
-      "かぼちゃ": 120,
-      "常総牛": 320
-    };
-
-    const SET_DEFS = [
-      {
-        name: "お得セット",
-        price: 1400,
-        className: "set-otoku",
-        items: { "ビーフ": 3, "メンチ": 2 }
-      },
-      {
-        name: "4点セット",
-        price: 1200,
-        className: "set-4ten",
-        items: { "ビーフ": 1, "メンチ": 1, "牛すじ": 1, "明太クリーミー": 1 }
-      },
-      {
-        name: "お土産セット",
-        price: 1000,
-        className: "set-omiyage",
-        items: { "ビーフ": 1, "和風だし": 1, "常総牛": 1 }
-      },
-      {
-        name: "3点セット",
-        price: 900,
-        className: "set-3ten",
-        items: { "ビーフ": 1, "メンチ": 1, "牛すじ": 1 }
-      }
-    ];
-
-    let items = [];
-    let fixedSetCounts = {};
-    let orderHistory = [];
-    let nextOrderNo = 1;
-    let undoStack = [];
-    let inventoryLedgerByMonth = {};
-    let monthlyFixedCostByMonth = {};
-    let costMap = { ...DEFAULT_COST_MAP };
-    let previousTotal = null;
-    let hadSuggestionPrev = false;
-
-    function pushUndoSnapshot() {
-      undoStack.push({
-        items: structuredClone(items),
-        fixedSetCounts: structuredClone(fixedSetCounts)
-      });
-      if (undoStack.length > 30) undoStack.shift();
-    }
-
-    function undoLastAction() {
-      const snapshot = undoStack.pop();
-      if (!snapshot) return;
-      items = snapshot.items;
-      fixedSetCounts = snapshot.fixedSetCounts;
-      render();
-    }
-
-    function saveState() {
-      const state = {
-        items,
-        fixedSetCounts,
-        orderHistory,
-        nextOrderNo,
-        inventoryLedgerByMonth,
-        monthlyFixedCostByMonth,
-        costMap
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-
-    function getWebhookUrl() {
-      return localStorage.getItem(WEBHOOK_URL_KEY) || "";
-    }
-
-    function saveWebhookUrl() {
-      const input = document.getElementById("sheetWebhookUrl");
-      const url = (input.value || "").trim();
-      if (!url) {
-        alert("URLを入力してください。");
-        return;
-      }
-      if (!url.startsWith("https://script.google.com/")) {
-        if (!confirm("Google Apps ScriptのURL以外です。保存しますか？")) return;
-      }
-      localStorage.setItem(WEBHOOK_URL_KEY, url);
-      setSheetStatus("URLを保存しました。", false);
-    }
-
-    function setSheetStatus(message, isError) {
-      const status = document.getElementById("sheetStatus");
-      status.textContent = message;
-      status.style.color = isError ? "#b42332" : "#2f7d32";
-    }
-
-    async function postToWebhook(payload) {
-      const webhookUrl = getWebhookUrl();
-      if (!webhookUrl) {
-        throw new Error("送信先URLが未設定です。");
-      }
-      try {
-        const res = await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) {
-          throw new Error(`送信失敗: HTTP ${res.status}`);
-        }
-        try {
-          return await res.json();
-        } catch (e) {
-          return { ok: true, message: "response parsing skipped" };
-        }
-      } catch (primaryError) {
-        // iPhoneのブラウザではCORSで"Load failed"になることがあるため、
-        // no-corsで送信のみ実行し、保存結果はシート側で確認する。
-        await fetch(webhookUrl, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-        return { ok: true, message: "sent in no-cors mode (verify on sheet)" };
-      }
-    }
-
-    async function testSheetConnection() {
-      try {
-        setSheetStatus("接続テスト中...", false);
-        await postToWebhook({
-          action: "ping",
-          sentAt: new Date().toISOString(),
-          appVersion: APP_VERSION
-        });
-        setSheetStatus("接続OK: Apps Scriptと通信できました。", false);
-      } catch (e) {
-        setSheetStatus(`接続NG: ${e.message}`, true);
-      }
-    }
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed.items)) items = parsed.items;
-        if (parsed.fixedSetCounts && typeof parsed.fixedSetCounts === "object") fixedSetCounts = parsed.fixedSetCounts;
-        if (Array.isArray(parsed.orderHistory)) orderHistory = parsed.orderHistory;
-        if (Number.isInteger(parsed.nextOrderNo) && parsed.nextOrderNo > 0) nextOrderNo = parsed.nextOrderNo;
-        if (parsed.inventoryLedgerByMonth && typeof parsed.inventoryLedgerByMonth === "object") {
-          inventoryLedgerByMonth = parsed.inventoryLedgerByMonth;
-        }
-        if (parsed.monthlyFixedCostByMonth && typeof parsed.monthlyFixedCostByMonth === "object") {
-          monthlyFixedCostByMonth = parsed.monthlyFixedCostByMonth;
-        }
-        if (parsed.costMap && typeof parsed.costMap === "object") {
-          costMap = { ...DEFAULT_COST_MAP, ...parsed.costMap };
-        }
-      } catch (e) {
-        // 読み込み失敗時は初期値のまま継続
-      }
-    }
-
-    function addItem(name, price) {
-      pushUndoSnapshot();
-      items.push({ name, price });
-      render();
-    }
-
-    function addSet(setName) {
-      pushUndoSnapshot();
-      fixedSetCounts[setName] = (fixedSetCounts[setName] || 0) + 1;
-      render();
-    }
-
-    function removeSet(setName) {
-      const current = fixedSetCounts[setName] || 0;
-      if (current <= 0) return;
-      pushUndoSnapshot();
-      if (current === 1) {
-        delete fixedSetCounts[setName];
-      } else {
-        fixedSetCounts[setName] = current - 1;
-      }
-      render();
-    }
-
-    function getSetDefByName(setName) {
-      return SET_DEFS.find((setDef) => setDef.name === setName) || null;
-    }
-
-    function resetAll() {
-      if (!confirm("現在の注文内容をクリアします。よろしいですか？")) return;
-      pushUndoSnapshot();
-      items = [];
-      fixedSetCounts = {};
-      render();
-    }
-
-    function resetDemoData() {
-      if (!confirm("履歴・在庫・原価などの保存データを全て初期化します。よろしいですか？")) return;
-      localStorage.removeItem(STORAGE_KEY);
-      items = [];
-      fixedSetCounts = {};
-      orderHistory = [];
-      nextOrderNo = 1;
-      undoStack = [];
-      inventoryLedgerByMonth = {};
-      monthlyFixedCostByMonth = {};
-      costMap = { ...DEFAULT_COST_MAP };
-      previousTotal = null;
-      hadSuggestionPrev = false;
-      document.getElementById("cashInput").value = "";
-      showToast("テストデータをリセットしました");
-      render();
-    }
-
-    function removeItem(name) {
-      const idx = items.findIndex((item) => item.name === name);
-      if (idx === -1) return;
-      pushUndoSnapshot();
-      items.splice(idx, 1);
-      render();
-    }
-
-    function buildDisplaySummary() {
-      const count = buildCountMap();
-      const suggestedSetCounts = calcSuggestionSetCounts(count);
-      let fixedSetTotal = 0;
-      let singleTotal = 0;
-      const fixedSetGrouped = {};
-
-      for (const setDef of SET_DEFS) {
-        const qty = fixedSetCounts[setDef.name] || 0;
-        if (qty > 0) {
-          fixedSetGrouped[setDef.name] = qty;
-          fixedSetTotal += setDef.price * qty;
-        }
-      }
-
-      for (const [name, qty] of Object.entries(count)) {
-        singleTotal += (PRICE_MAP[name] || 0) * qty;
-      }
-
-      const grandTotal = fixedSetTotal + singleTotal;
-      return { count, suggestedSetCounts, fixedSetGrouped, grandTotal };
-    }
-
-    function calcOrderCostFromCountMap(countMap) {
-      let totalCost = 0;
-      for (const [name, qty] of Object.entries(countMap)) {
-        totalCost += (costMap[name] || 0) * qty;
-      }
-      return totalCost;
-    }
-
-    function updateChangeLabel(grandTotal) {
-      const input = document.getElementById("cashInput");
-      const changeEl = document.getElementById("change");
-      const cash = Number(input.value);
-      if (!cash || cash < 0) {
-        changeEl.textContent = "お釣り: -";
-        return;
-      }
-      const diff = cash - grandTotal;
-      if (diff < 0) {
-        changeEl.textContent = `不足: ${Math.abs(diff)}円`;
-        return;
-      }
-      changeEl.textContent = `お釣り: ${diff}円`;
-    }
-
-    function renderHistory() {
-      const historyEl = document.getElementById("history");
-      if (!orderHistory.length) {
-        historyEl.innerHTML = "まだ会計履歴はありません。";
-        return;
-      }
-      let html = "";
-      for (const row of orderHistory.slice(-20).reverse()) {
-        const setLines = (row.setSummary || []).map((line) => `${line}<br>`).join("");
-        const singleLines = (row.singleSummary || []).map((line) => `${line}<br>`).join("");
-        html += `<div class="history-item">
-          <div>#${row.orderNo} ${row.at || "-"} / 合計 ${row.total}円 / 粗利 ${row.grossProfit || 0}円</div>
-          <div class="history-group"><div class="history-title">【セット】</div>${setLines || "なし"}</div>
-          <div class="history-group"><div class="history-title">【単品】</div>${singleLines || "なし"}</div>
-        </div>`;
-      }
-      historyEl.innerHTML = html;
-    }
-
-    function buildSoldItemCounts(count) {
-      const sold = { ...count };
-      for (const setDef of SET_DEFS) {
-        const qty = fixedSetCounts[setDef.name] || 0;
-        if (qty <= 0) continue;
-        for (const [itemName, itemQty] of Object.entries(setDef.items)) {
-          sold[itemName] = (sold[itemName] || 0) + (itemQty * qty);
-        }
-      }
-      return sold;
-    }
-
-    function finalizeOrder() {
-      const { count, fixedSetGrouped, grandTotal } = buildDisplaySummary();
-      const hasAnyItem = Object.keys(count).length > 0 || Object.keys(fixedSetCounts).length > 0;
-      if (!hasAnyItem) {
-        alert("注文が空です。");
-        return;
-      }
-
-      const soldItemCounts = buildSoldItemCounts(count);
-      const orderCost = calcOrderCostFromCountMap(soldItemCounts);
-      const grossProfit = grandTotal - orderCost;
-      const setSummary = [];
-      const singleSummary = [];
-      for (const setDef of SET_DEFS) {
-        const qty = fixedSetGrouped[setDef.name] || 0;
-        if (qty > 0) setSummary.push(`${setDef.name} ×${qty}`);
-      }
-      for (const [name, qty] of Object.entries(count)) {
-        singleSummary.push(`${name} ×${qty}`);
-      }
-
-      const now = new Date();
-      const date = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
-      const time = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
-      const at = `${date} ${time}`;
-      orderHistory.push({
-        orderNo: nextOrderNo,
-        at,
-        timestamp: now.toISOString(),
-        total: grandTotal,
-        summary: [...setSummary, ...singleSummary].join(" / "),
-        soldItemCounts,
-        setSummary,
-        singleSummary,
-        grossProfit
-      });
-      nextOrderNo += 1;
-      if (orderHistory.length > 200) orderHistory = orderHistory.slice(-200);
-
-      items = [];
-      fixedSetCounts = {};
-      document.getElementById("cashInput").value = "";
-      showToast("会計を確定しました");
-      playSuccessBurst();
-      render();
-    }
-
-    function buildCountMap() {
-      const count = {};
-      for (const item of items) {
-        count[item.name] = (count[item.name] || 0) + 1;
-      }
-      return count;
-    }
-
-    function canApplySet(countMap, setDef) {
-      for (const [name, qty] of Object.entries(setDef.items)) {
-        if ((countMap[name] || 0) < qty) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    function subtractSet(countMap, setDef) {
-      for (const [name, qty] of Object.entries(setDef.items)) {
-        countMap[name] -= qty;
-      }
-    }
-
-    function countMapKey(countMap) {
-      return Object.keys(PRICE_MAP)
-        .map((name) => countMap[name] || 0)
-        .join("|");
-    }
-
-    function solveBestSetPlan(countMap, memo) {
-      const key = countMapKey(countMap);
-      if (memo[key]) {
-        return memo[key];
-      }
-
-      const baseResult = {
-        setCount: 0,
-        setTotalPrice: 0,
-        setCounts: {},
-        remainingSingles: { ...countMap }
-      };
-      let best = baseResult;
-
-      for (const setDef of SET_DEFS) {
-        if (!canApplySet(countMap, setDef)) continue;
-
-        const nextCount = { ...countMap };
-        subtractSet(nextCount, setDef);
-        const child = solveBestSetPlan(nextCount, memo);
-
-        const candidateSetCount = child.setCount + 1;
-        const candidateSetTotalPrice = child.setTotalPrice + setDef.price;
-        const shouldReplace =
-          candidateSetCount > best.setCount ||
-          (candidateSetCount === best.setCount && candidateSetTotalPrice > best.setTotalPrice);
-
-        if (shouldReplace) {
-          const nextSetCounts = { ...child.setCounts };
-          nextSetCounts[setDef.name] = (nextSetCounts[setDef.name] || 0) + 1;
-          best = {
-            setCount: candidateSetCount,
-            setTotalPrice: candidateSetTotalPrice,
-            setCounts: nextSetCounts,
-            remainingSingles: child.remainingSingles
-          };
-        }
-      }
-
-      memo[key] = best;
-      return best;
-    }
-
-    function calcAutoSets(originalCount) {
-      const plan = solveBestSetPlan({ ...originalCount }, {});
-
-      let total = 0;
-      total += plan.setTotalPrice;
-      for (const [name, qty] of Object.entries(plan.remainingSingles)) {
-        if (qty > 0) {
-          total += PRICE_MAP[name] * qty;
-        }
-      }
-
-      // 10円未満が出ない前提のため、表示値は10円単位で統一。
-      total = Math.round(total / 10) * 10;
-
-      return { appliedSetCounts: plan.setCounts, remainingSingles: plan.remainingSingles, total };
-    }
-
-    function calcSuggestionSetCounts(countMap) {
-      const suggestionCounts = {};
-      const working = { ...countMap };
-
-      // 各セットは提案上「最大1回」だけ表示する。
-      // 4点と3点の重複も避けるため、順序を固定して1回ずつ判定する。
-      const ordered = ["お得セット", "お土産セット", "4点セット", "3点セット"];
-      for (const setName of ordered) {
-        const setDef = SET_DEFS.find((s) => s.name === setName);
-        if (!setDef) continue;
-
-        let possibleQty = Infinity;
-        for (const [name, qty] of Object.entries(setDef.items)) {
-          const has = working[name] || 0;
-          possibleQty = Math.min(possibleQty, Math.floor(has / qty));
-        }
-
-        if (possibleQty > 0 && possibleQty !== Infinity) {
-          suggestionCounts[setDef.name] = 1;
-          for (const [name, qty] of Object.entries(setDef.items)) {
-            working[name] = (working[name] || 0) - qty;
-          }
-        }
-      }
-
-      return suggestionCounts;
-    }
-
-    function calcSetRegularPrice(setDef) {
-      let regular = 0;
-      for (const [name, qty] of Object.entries(setDef.items)) {
-        regular += (PRICE_MAP[name] || 0) * qty;
-      }
-      return regular;
-    }
-
-    function renderCostConfig() {
-      const wrap = document.getElementById("costConfig");
-      let html = "";
-      for (const productName of Object.keys(PRICE_MAP)) {
-        html += `<div class="cost-row"><span>${productName}</span><input class="stock-input" type="number" min="0" step="1" value="${costMap[productName] || 0}" onchange="updateCostMap('${productName}', this.value)" /></div>`;
-      }
-      wrap.innerHTML = html;
-    }
-
-    function updateCostMap(productName, value) {
-      costMap[productName] = parseSafeNumber(value);
-      render();
-    }
-
-    function showToast(message) {
-      const toast = document.getElementById("appToast");
-      toast.textContent = message;
-      toast.classList.remove("show");
-      void toast.offsetWidth;
-      toast.classList.add("show");
-      clearTimeout(showToast._timer);
-      showToast._timer = setTimeout(() => {
-        toast.classList.remove("show");
-      }, 1300);
-    }
-
-    function playSuccessBurst() {
-      const burst = document.getElementById("successBurst");
-      burst.classList.remove("show");
-      void burst.offsetWidth;
-      burst.classList.add("show");
-    }
-
-    function consumeSingleItemsForSet(setDef, times) {
-      for (let t = 0; t < times; t += 1) {
-        for (const [name, qty] of Object.entries(setDef.items)) {
-          for (let i = 0; i < qty; i += 1) {
-            const idx = items.findIndex((item) => item.name === name);
-            if (idx === -1) break;
-            items.splice(idx, 1);
-          }
-        }
-      }
-    }
-
-    function applySuggestedSets() {
-      const count = buildCountMap();
-      const suggestedSetCounts = calcSuggestionSetCounts(count);
-      if (!Object.keys(suggestedSetCounts).length) return;
-      pushUndoSnapshot();
-      for (const [setName, qty] of Object.entries(suggestedSetCounts)) {
-        fixedSetCounts[setName] = (fixedSetCounts[setName] || 0) + qty;
-        const setDef = getSetDefByName(setName);
-        if (!setDef) continue;
-        consumeSingleItemsForSet(setDef, qty);
-      }
-      showToast("適用しました");
-      render();
-    }
-
-    function renderButtonStates(count) {
-      const itemButtons = document.querySelectorAll(".item-btn");
-      for (const button of itemButtons) {
-        const name = button.dataset.itemName;
-        const active = (count[name] || 0) > 0;
-        button.classList.toggle("selected", active);
-      }
-      const setButtons = document.querySelectorAll(".set-btn");
-      for (const button of setButtons) {
-        const setName = button.dataset.setName;
-        const active = (fixedSetCounts[setName] || 0) > 0;
-        button.classList.toggle("selected", active);
-      }
-    }
-
-    function renderSetButtons() {
-      const setButtons = document.querySelectorAll(".set-btn");
-      for (const button of setButtons) {
-        const setName = button.dataset.setName;
-        const setDef = getSetDefByName(setName);
-        if (!setDef) continue;
-        const regular = calcSetRegularPrice(setDef);
-        const saving = Math.max(0, regular - setDef.price);
-        button.innerHTML = `<span>${setDef.name}</span><span class="price">${setDef.price}円</span><span class="saving">${saving}円お得</span>`;
-      }
-    }
-
-    function getCurrentMonthString() {
-      const d = new Date();
-      return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}`;
-    }
-
-    function getTargetMonth() {
-      const monthInput = document.getElementById("targetMonth");
-      return monthInput.value || getCurrentMonthString();
-    }
-
-    function ensureMonthLedger(month) {
-      if (!inventoryLedgerByMonth[month]) {
-        inventoryLedgerByMonth[month] = {};
-      }
-      for (const productName of Object.keys(PRICE_MAP)) {
-        if (!inventoryLedgerByMonth[month][productName]) {
-          inventoryLedgerByMonth[month][productName] = {
-            opening: 0,
-            purchase: 0,
-            waste: 0,
-            unitCost: costMap[productName] || 0
-          };
-        }
-      }
-      if (typeof monthlyFixedCostByMonth[month] !== "number") {
-        monthlyFixedCostByMonth[month] = 0;
-      }
-    }
-
-    function parseSafeNumber(value) {
-      const n = Number(value);
-      if (!Number.isFinite(n) || n < 0) return 0;
-      return Math.round(n * 100) / 100;
-    }
-
-    function updateLedgerValue(month, productName, field, value) {
-      ensureMonthLedger(month);
-      inventoryLedgerByMonth[month][productName][field] = parseSafeNumber(value);
-      render();
-    }
-
-    function calcMonthlyMetrics(month) {
-      ensureMonthLedger(month);
-      const monthLedger = inventoryLedgerByMonth[month];
-      const soldByProduct = {};
-      let monthlySales = 0;
-
-      for (const row of orderHistory) {
-        const monthKey = row.timestamp ? row.timestamp.slice(0, 7) : "";
-        if (monthKey !== month) continue;
-        monthlySales += Number(row.total) || 0;
-        if (!row.soldItemCounts || typeof row.soldItemCounts !== "object") continue;
-        for (const [name, qty] of Object.entries(row.soldItemCounts)) {
-          soldByProduct[name] = (soldByProduct[name] || 0) + (Number(qty) || 0);
-        }
-      }
-
-      const rows = [];
-      let totalCogs = 0;
-      let totalGrossProfit = 0;
-      let totalWasteCost = 0;
-      for (const productName of Object.keys(PRICE_MAP)) {
-        const l = monthLedger[productName];
-        const soldQty = soldByProduct[productName] || 0;
-        const available = l.opening + l.purchase;
-        const ending = available - soldQty - l.waste;
-        const digestionRate = l.opening > 0 ? (soldQty / l.opening) * 100 : 0;
-        const sales = soldQty * PRICE_MAP[productName];
-        const cogs = soldQty * l.unitCost;
-        const wasteCost = l.waste * l.unitCost;
-        const grossProfit = sales - cogs;
-        totalCogs += cogs;
-        totalGrossProfit += grossProfit;
-        totalWasteCost += wasteCost;
-        rows.push({
-          productName,
-          soldQty,
-          opening: l.opening,
-          purchase: l.purchase,
-          waste: l.waste,
-          ending,
-          digestionRate,
-          unitCost: l.unitCost,
-          sales,
-          cogs,
-          grossProfit
-        });
-      }
-
-      const fixedCost = monthlyFixedCostByMonth[month] || 0;
-      const operatingProfit = monthlySales - totalCogs - totalWasteCost - fixedCost;
-      return {
-        rows,
-        monthlySales,
-        totalCogs,
-        totalWasteCost,
-        totalGrossProfit,
-        fixedCost,
-        operatingProfit
-      };
-    }
-
-    function getMonthFromTimestamp(timestamp) {
-      if (!timestamp || typeof timestamp !== "string" || timestamp.length < 7) return "";
-      return timestamp.slice(0, 7);
-    }
-
-    function formatYen(value) {
-      return `${Math.round(value).toLocaleString("ja-JP")}円`;
-    }
-
-    function renderMonthlySection() {
-      const month = getTargetMonth();
-      ensureMonthLedger(month);
-      const monthlyFixedCostInput = document.getElementById("monthlyFixedCost");
-      monthlyFixedCostInput.value = monthlyFixedCostByMonth[month] || 0;
-
-      const metrics = calcMonthlyMetrics(month);
-      const kpiEl = document.getElementById("monthlyKpis");
-      kpiEl.innerHTML = `
-        <div class="kpi-card"><div class="label">売上</div><div class="value">${formatYen(metrics.monthlySales)}</div></div>
-        <div class="kpi-card"><div class="label">売上原価</div><div class="value">${formatYen(metrics.totalCogs)}</div></div>
-        <div class="kpi-card"><div class="label">廃棄原価</div><div class="value">${formatYen(metrics.totalWasteCost)}</div></div>
-        <div class="kpi-card"><div class="label">粗利</div><div class="value">${formatYen(metrics.totalGrossProfit)}</div></div>
-        <div class="kpi-card"><div class="label">営業利益</div><div class="value">${formatYen(metrics.operatingProfit)}</div></div>
-      `;
-
-      const rowsEl = document.getElementById("monthlyRows");
-      let rowsHtml = "";
-      for (const row of metrics.rows) {
-        rowsHtml += `
-          <tr>
-            <td>${row.productName}</td>
-            <td>${row.soldQty}</td>
-            <td><input class="stock-input" type="number" min="0" step="1" value="${row.opening}" onchange="updateLedgerValue('${month}', '${row.productName}', 'opening', this.value)" /></td>
-            <td><input class="stock-input" type="number" min="0" step="1" value="${row.purchase}" onchange="updateLedgerValue('${month}', '${row.productName}', 'purchase', this.value)" /></td>
-            <td><input class="stock-input" type="number" min="0" step="1" value="${row.waste}" onchange="updateLedgerValue('${month}', '${row.productName}', 'waste', this.value)" /></td>
-            <td>${row.ending}</td>
-            <td>${row.digestionRate.toFixed(1)}%</td>
-            <td><input class="stock-input" type="number" min="0" step="1" value="${row.unitCost}" onchange="updateLedgerValue('${month}', '${row.productName}', 'unitCost', this.value)" /></td>
-            <td>${Math.round(row.sales).toLocaleString("ja-JP")}</td>
-            <td>${Math.round(row.cogs).toLocaleString("ja-JP")}</td>
-            <td>${Math.round(row.grossProfit).toLocaleString("ja-JP")}</td>
-          </tr>
-        `;
-      }
-      rowsEl.innerHTML = rowsHtml;
-    }
-
-    function updateMonthlyFixedCost(value) {
-      const month = getTargetMonth();
-      ensureMonthLedger(month);
-      monthlyFixedCostByMonth[month] = parseSafeNumber(value);
-      render();
-    }
-
-    function daysInMonth(year, monthIndex0) {
-      return new Date(year, monthIndex0 + 1, 0).getDate();
-    }
-
-    function getWeekday(year, monthIndex0, day) {
-      return new Date(year, monthIndex0, day).getDay();
-    }
-
-    function isOpenDay(year, monthIndex0, day) {
-      const w = getWeekday(year, monthIndex0, day);
-      // 営業日: 木金土日
-      return w === 4 || w === 5 || w === 6 || w === 0;
-    }
-
-    function isHolidayLikePeak(year, monthIndex0, day) {
-      // デモ用: GWの混雑を想定（4/29-5/6）
-      const month = monthIndex0 + 1;
-      return (month === 4 && day >= 29) || (month === 5 && day <= 6);
-    }
-
-    function calcAverageUnitPrice() {
-      const distribution = {
-        "ビーフ": 0.24,
-        "メンチ": 0.2,
-        "牛すじ": 0.16,
-        "和風だし": 0.11,
-        "明太クリーミー": 0.09,
-        "チーズ": 0.07,
-        "かにクリーム": 0.05,
-        "かぼちゃ": 0.05,
-        "常総牛": 0.03
-      };
-      let avg = 0;
-      for (const [name, ratio] of Object.entries(distribution)) {
-        avg += (PRICE_MAP[name] || 0) * ratio;
-      }
-      return avg;
-    }
-
-    function buildDailySoldMap(totalUnits) {
-      const distribution = {
-        "ビーフ": 0.24,
-        "メンチ": 0.2,
-        "牛すじ": 0.16,
-        "和風だし": 0.11,
-        "明太クリーミー": 0.09,
-        "チーズ": 0.07,
-        "かにクリーム": 0.05,
-        "かぼちゃ": 0.05,
-        "常総牛": 0.03
-      };
-      const keys = Object.keys(distribution);
-      const soldMap = {};
-      let consumed = 0;
-      for (let i = 0; i < keys.length; i += 1) {
-        const name = keys[i];
-        if (i === keys.length - 1) {
-          soldMap[name] = totalUnits - consumed;
-          continue;
-        }
-        const qty = Math.floor(totalUnits * distribution[name]);
-        soldMap[name] = qty;
-        consumed += qty;
-      }
-      return soldMap;
-    }
-
-    function pickTargetSales(year, monthIndex0, day) {
-      if (isHolidayLikePeak(year, monthIndex0, day)) {
-        // 連休/GWの混雑日: 18万円以上
-        return 180000 + ((day % 4) * 12000);
-      }
-      const w = getWeekday(year, monthIndex0, day);
-      if (w === 4 || w === 5) {
-        // 木金（平日運用）: 2〜3万円
-        return 22000 + ((day % 3) * 4000);
-      }
-      // 土日: 7〜8万円
-      return 70000 + ((day % 3) * 5000);
-    }
-
-    function calcSalesFromSoldMap(soldMap) {
-      let total = 0;
-      for (const [name, qty] of Object.entries(soldMap)) {
-        total += (PRICE_MAP[name] || 0) * qty;
-      }
-      return total;
-    }
-
-    function calcCostFromSoldMap(soldMap) {
-      let total = 0;
-      for (const [name, qty] of Object.entries(soldMap)) {
-        total += (costMap[name] || 0) * qty;
-      }
-      return total;
-    }
-
-    function loadSubmissionSampleData() {
-      const month = getTargetMonth();
-      const [y, m] = month.split("-").map(Number);
-      if (!y || !m) {
-        alert("対象月を先に選択してください。");
-        return;
-      }
-      if (!confirm(`${month} に提出用サンプルデータを投入します。既存履歴に追加されます。続けますか？`)) return;
-
-      const monthIndex0 = m - 1;
-      const dayCount = daysInMonth(y, monthIndex0);
-      const avgPrice = calcAverageUnitPrice();
-      const productMonthlySold = {};
-      let inserted = 0;
-      for (let d = 1; d <= dayCount; d += 1) {
-        if (!isOpenDay(y, monthIndex0, d)) continue;
-        const targetSales = pickTargetSales(y, monthIndex0, d);
-        const totalUnits = Math.max(1, Math.round(targetSales / avgPrice));
-        const soldItemCounts = buildDailySoldMap(totalUnits);
-        for (const [name, qty] of Object.entries(soldItemCounts)) {
-          productMonthlySold[name] = (productMonthlySold[name] || 0) + qty;
-        }
-        const sales = calcSalesFromSoldMap(soldItemCounts);
-        const costs = calcCostFromSoldMap(soldItemCounts);
-        const date = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-        const timestamp = `${date}T12:00:00+09:00`;
-        const singleSummary = Object.entries(soldItemCounts)
-          .filter(([, qty]) => qty > 0)
-          .map(([name, qty]) => `${name} ×${qty}`);
-
-        orderHistory.push({
-          orderNo: nextOrderNo,
-          at: `${date} 12:00:00`,
-          timestamp,
-          total: sales,
-          summary: singleSummary.join(" / "),
-          soldItemCounts,
-          setSummary: [],
-          singleSummary,
-          grossProfit: sales - costs
-        });
-        nextOrderNo += 1;
-        inserted += 1;
-      }
-
-      ensureMonthLedger(month);
-      for (const productName of Object.keys(PRICE_MAP)) {
-        const sold = productMonthlySold[productName] || 0;
-        inventoryLedgerByMonth[month][productName] = {
-          opening: Math.ceil(sold * 0.3),
-          purchase: Math.ceil(sold * 0.85),
-          waste: Math.ceil(sold * 0.03),
-          unitCost: costMap[productName] || 0
-        };
-      }
-      monthlyFixedCostByMonth[month] = 120000;
-      if (orderHistory.length > 1000) orderHistory = orderHistory.slice(-1000);
-      showToast(`提出用データを営業日${inserted}日分投入しました`);
-      render();
-    }
-
-    function escapeCsvValue(value) {
-      const s = String(value ?? "");
-      if (!s.includes(",") && !s.includes("\"") && !s.includes("\n")) return s;
-      return `"${s.replaceAll("\"", "\"\"")}"`;
-    }
-
-    function downloadMonthlyCsv() {
-      const month = getTargetMonth();
-      const metrics = calcMonthlyMetrics(month);
-      const header = ["月", "商品", "販売数", "期首在庫", "仕入数", "廃棄数", "理論在庫", "消化率(%)", "単位原価", "売上", "原価", "粗利"];
-      const lines = [header.join(",")];
-      for (const row of metrics.rows) {
-        lines.push([
-          month,
-          row.productName,
-          row.soldQty,
-          row.opening,
-          row.purchase,
-          row.waste,
-          row.ending,
-          row.digestionRate.toFixed(1),
-          row.unitCost,
-          Math.round(row.sales),
-          Math.round(row.cogs),
-          Math.round(row.grossProfit)
-        ].map(escapeCsvValue).join(","));
-      }
-      lines.push("");
-      lines.push(["売上", Math.round(metrics.monthlySales)].join(","));
-      lines.push(["売上原価", Math.round(metrics.totalCogs)].join(","));
-      lines.push(["廃棄原価", Math.round(metrics.totalWasteCost)].join(","));
-      lines.push(["固定費", Math.round(metrics.fixedCost)].join(","));
-      lines.push(["営業利益", Math.round(metrics.operatingProfit)].join(","));
-      const csvContent = "\uFEFF" + lines.join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `monthly_report_${month}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    async function sendSalesLogToSheet() {
-      try {
-        if (!orderHistory.length) {
-          alert("送信できる会計履歴がありません。");
-          return;
-        }
-        setSheetStatus("会計履歴を送信中...", false);
-        const payload = {
-          action: "upsertSalesLog",
-          sentAt: new Date().toISOString(),
-          appVersion: APP_VERSION,
-          rows: orderHistory.map((row) => ({
-            orderNo: row.orderNo,
-            at: row.at || "",
-            timestamp: row.timestamp || "",
-            month: getMonthFromTimestamp(row.timestamp),
-            total: row.total || 0,
-            summary: row.summary || "",
-            soldItemCounts: row.soldItemCounts || {}
-          }))
-        };
-        const result = await postToWebhook(payload);
-        setSheetStatus(`会計履歴を送信しました。件数: ${payload.rows.length}${result.message ? ` / ${result.message}` : ""}`, false);
-      } catch (e) {
-        setSheetStatus(`会計履歴送信NG: ${e.message}`, true);
-      }
-    }
-
-    async function sendMonthlyReportToSheet() {
-      try {
-        const month = getTargetMonth();
-        const metrics = calcMonthlyMetrics(month);
-        setSheetStatus(`${month}の月次集計を送信中...`, false);
-        const payload = {
-          action: "upsertMonthlyReport",
-          sentAt: new Date().toISOString(),
-          appVersion: APP_VERSION,
-          month,
-          summary: {
-            monthlySales: Math.round(metrics.monthlySales),
-            totalCogs: Math.round(metrics.totalCogs),
-            totalWasteCost: Math.round(metrics.totalWasteCost),
-            totalGrossProfit: Math.round(metrics.totalGrossProfit),
-            fixedCost: Math.round(metrics.fixedCost),
-            operatingProfit: Math.round(metrics.operatingProfit)
-          },
-          rows: metrics.rows.map((row) => ({
-            productName: row.productName,
-            soldQty: row.soldQty,
-            opening: row.opening,
-            purchase: row.purchase,
-            waste: row.waste,
-            ending: row.ending,
-            digestionRate: Number(row.digestionRate.toFixed(1)),
-            unitCost: row.unitCost,
-            sales: Math.round(row.sales),
-            cogs: Math.round(row.cogs),
-            grossProfit: Math.round(row.grossProfit)
-          }))
-        };
-        const result = await postToWebhook(payload);
-        setSheetStatus(`月次集計を送信しました。対象: ${month}${result.message ? ` / ${result.message}` : ""}`, false);
-      } catch (e) {
-        setSheetStatus(`月次送信NG: ${e.message}`, true);
-      }
-    }
-
-    function render() {
-      const { count, suggestedSetCounts, grandTotal } = buildDisplaySummary();
-
-      let orderHTML = "";
-      for (const setDef of SET_DEFS) {
-        const qty = fixedSetCounts[setDef.name] || 0;
-        if (qty > 0) {
-          orderHTML += `<div class="order-row"><span>${setDef.name} ×${qty}</span><button class="mini-btn" onclick="removeSet('${setDef.name}')">-1 取り消し</button></div>`;
-        }
-      }
-      for (const [name, qty] of Object.entries(count)) {
-        orderHTML += `<div class="order-row"><span>${name} ×${qty}</span><button class="mini-btn" onclick="removeItem('${name}')">-1 取り消し</button></div>`;
-      }
-      document.getElementById("order").innerHTML = orderHTML || "なし";
-
-      if (Object.keys(suggestedSetCounts).length === 0) {
-        document.getElementById("suggest").innerHTML = "（該当なし）";
-      } else {
-        let suggestHTML = "";
-        let totalSaving = 0;
-        const hasSetNow = true;
-        for (const setDef of SET_DEFS) {
-          const qty = suggestedSetCounts[setDef.name] || 0;
-          if (qty > 0) {
-            const regularPrice = calcSetRegularPrice(setDef);
-            const savingPerSet = Math.max(0, regularPrice - setDef.price);
-            const savingTotal = savingPerSet * qty;
-            totalSaving += savingTotal;
-            suggestHTML += `<div class="set-row"><span class="set-chip ${setDef.className}">${setDef.name}</span><span>この組み合わせなら${setDef.name}で${savingTotal}円お得です</span></div>`;
-          }
-        }
-        suggestHTML += `<div class="set-row"><button class="primary-btn mini-btn" onclick="applySuggestedSets()">自動適用しますか？</button></div>`;
-        suggestHTML += `<div class="subtle">適用候補の合計お得額: ${totalSaving}円</div>`;
-        document.getElementById("suggest").innerHTML = suggestHTML.trim();
-        if (!hadSuggestionPrev && hasSetNow) {
-          const suggestEl = document.getElementById("suggest");
-          suggestEl.classList.remove("flash");
-          void suggestEl.offsetWidth;
-          suggestEl.classList.add("flash");
-        }
-      }
-      hadSuggestionPrev = Object.keys(suggestedSetCounts).length > 0;
-
-      let singleHTML = "";
-      for (const [name, qty] of Object.entries(count)) {
-        if (qty > 0) {
-          singleHTML += `${name} ×${qty}<br>`;
-        }
-      }
-      if (singleHTML) {
-        document.getElementById("singleItems").innerHTML = `単品（セット対象外）<br>${singleHTML}`;
-      } else {
-        document.getElementById("singleItems").innerHTML = "";
-      }
-
-      const totalEl = document.getElementById("total");
-      totalEl.textContent = `${grandTotal}円`;
-      if (previousTotal !== null && previousTotal !== grandTotal) {
-        totalEl.classList.remove("total-pop");
-        void totalEl.offsetWidth;
-        totalEl.classList.add("total-pop");
-      }
-      previousTotal = grandTotal;
-
-      const soldItemCounts = buildSoldItemCounts(count);
-      const orderCost = calcOrderCostFromCountMap(soldItemCounts);
-      const orderGross = grandTotal - orderCost;
-      document.getElementById("orderProfit").textContent = `売上 ${grandTotal}円 / 原価 ${Math.round(orderCost)}円 / 粗利 ${Math.round(orderGross)}円`;
-      updateChangeLabel(grandTotal);
-      renderHistory();
-      renderButtonStates(count);
-      renderCostConfig();
-      renderMonthlySection();
-      saveState();
-    }
-
-    // 保存後に自動リロードされるよう、index.htmlの更新時刻を監視する。
-    (function enableAutoReloadOnSave() {
-      let lastModified = null;
-      setInterval(async () => {
-        try {
-          const res = await fetch(window.location.href, { method: "HEAD", cache: "no-store" });
-          const current = res.headers.get("Last-Modified");
-          if (!current) return;
-          if (lastModified && current !== lastModified) {
-            window.location.reload();
-            return;
-          }
-          lastModified = current;
-        } catch (e) {
-          // 監視失敗時は何もしない
-        }
-      }, 1000);
-    })();
-
-    renderSetButtons();
-    loadState();
-    document.getElementById("targetMonth").value = getCurrentMonthString();
-    document.getElementById("sheetWebhookUrl").value = getWebhookUrl();
-    document.getElementById("cashInput").addEventListener("input", render);
-    document.getElementById("targetMonth").addEventListener("change", render);
-    document.getElementById("monthlyFixedCost").addEventListener("input", (e) => updateMonthlyFixedCost(e.target.value));
-    render();
-  </script>
+  <!-- 履歴・集計タブ -->
+  <div id="tab-history" class="panel">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h2 style="margin-bottom:0">会計履歴</h2>
+        <button class="btn-outline" style="padding:6px 14px;font-size:13px;border-radius:8px" onclick="clearHistory()">履歴を消去</button>
+      </div>
+      <div id="history-list" class="history-list">
+        <div class="empty">会計履歴はありません</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>本日のまとめ</h2>
+      <div class="total-row">
+        <span class="total-label">会計件数</span>
+        <span id="today-count" style="font-weight:700">0件</span>
+      </div>
+      <div class="total-row">
+        <span class="total-label">売上合計</span>
+        <span id="today-total" style="font-size:22px;font-weight:700;color:var(--ok)">¥0</span>
+      </div>
+      <div class="total-row">
+        <span class="total-label">割引合計</span>
+        <span id="today-discount" style="font-size:16px;font-weight:700;color:var(--ok)">−¥0</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>セット適用回数</h2>
+      <div id="set-ranking"><div class="empty">会計履歴がありません</div></div>
+    </div>
+    <div class="card">
+      <h2>商品ランキング（本日）</h2>
+      <div id="product-ranking"><div class="empty">会計履歴がありません</div></div>
+    </div>
   </div>
+
+  <!-- 月次管理タブ -->
+  <div id="tab-monthly" class="panel">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h2 style="margin-bottom:0">月次管理</h2>
+        <button class="btn-outline" style="padding:6px 14px;font-size:13px;border-radius:8px;cursor:pointer" onclick="loadSampleMonthly()">サンプルデータ投入</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="monthly-table" id="monthly-table"></table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>月次集計</h2>
+      <div id="monthly-summary"></div>
+      <button class="btn-full btn-outline" style="margin-top:12px" onclick="exportMonthlyCSV()">月次CSVをエクスポート</button>
+    </div>
+  </div>
+
+  <!-- 設定タブ -->
+  <div id="tab-settings" class="panel">
+    <div class="card">
+      <h2>原価設定</h2>
+      <div class="cost-grid" id="cost-grid"></div>
+      <button class="btn-full btn-primary" style="margin-top:12px" onclick="saveCosts()">原価を保存</button>
+    </div>
+    <div class="card">
+      <h2>スプレッドシート連携</h2>
+      <p style="font-size:13px;color:var(--sub);margin-bottom:10px">Google Apps Script のWebアプリURLを入力すると、会計データを自動送信できます。</p>
+      <input class="gas-input" id="gas-url" placeholder="https://script.google.com/macros/s/..." />
+      <button class="btn-full btn-primary" style="margin-bottom:8px" onclick="saveGasUrl()">URLを保存</button>
+      <button class="btn-full btn-outline" onclick="sendHistoryToSheet()">会計履歴を送信</button>
+      <button class="btn-full btn-outline" style="margin-top:8px" onclick="sendMonthlyToSheet()">月次集計を送信</button>
+      <div id="gas-status" class="status-msg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 商品データ =====
+const PRODUCTS = [
+  { id:1, name:'ビーフ',       price:220, cost:70  },
+  { id:2, name:'メンチ',       price:360, cost:120 },
+  { id:3, name:'野菜',         price:280, cost:90  },
+  { id:4, name:'だし',         price:170, cost:55  },
+  { id:5, name:'クリーム',     price:280, cost:90  },
+  { id:6, name:'チーズ',       price:280, cost:95  },
+  { id:7, name:'海鮮クリーム', price:300, cost:110 },
+  { id:8, name:'かぼちゃ',     price:250, cost:80  },
+  { id:9, name:'和牛',         price:600, cost:220 },
+];
+
+// ===== セット定義（discount 降順 — 大きい割引を優先適用）=====
+// 人気:220+360+280=860→850(-10) / 4点:+280=1140→1120(-20)
+// お土産:220+170+600=990→960(-30) / お得:220×3+360×2=1380→1330(-50)
+const SETS = [
+  { id:'otoku',   name:'お得セット',   items:[{id:1,qty:3},{id:2,qty:2}],                      setPrice:1330, discount:50 },
+  { id:'omiyage', name:'お土産セット', items:[{id:1,qty:1},{id:4,qty:1},{id:9,qty:1}],          setPrice:960,  discount:30 },
+  { id:'yonten',  name:'4点セット',    items:[{id:1,qty:1},{id:2,qty:1},{id:3,qty:1},{id:5,qty:1}], setPrice:1120, discount:20 },
+  { id:'ninki',   name:'人気セット',   items:[{id:1,qty:1},{id:2,qty:1},{id:3,qty:1}],          setPrice:850,  discount:10 },
+];
+
+let order = [];   // 生注文: [{id,name,price,cost,qty}]
+let costs = {};
+let history = [];
+let receivedAmount = 0;
+let receivedStr = '';
+let monthlyData = {};
+
+// ===== 初期化 =====
+function init() {
+  const saved = JSON.parse(localStorage.getItem('kc_costs') || '{}');
+  PRODUCTS.forEach(p => { costs[p.id] = saved[p.id] ?? p.cost; });
+  history = JSON.parse(localStorage.getItem('kc_history') || '[]');
+  const gasUrl = localStorage.getItem('kc_gas_url') || '';
+  if (gasUrl) document.getElementById('gas-url').value = gasUrl;
+  renderProducts();
+  renderSetInfoBox();
+  renderCostGrid();
+  renderMonthlyTable();
+  renderHistory();
+}
+
+// ===== 商品ボタン =====
+function renderProducts() {
+  const grid = document.getElementById('product-grid');
+  grid.innerHTML = '';
+  PRODUCTS.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'product-btn';
+    btn.innerHTML = `<span class="p-name">${p.name}</span><span class="p-price">¥${p.price.toLocaleString()}</span>`;
+    btn.onclick = () => addToOrder(p.id);
+    grid.appendChild(btn);
+  });
+}
+
+// ===== セット情報表示 =====
+function renderSetInfoBox() {
+  document.getElementById('set-info-rows').innerHTML = SETS.map(s => {
+    const contents = s.items.map(it => {
+      const p = PRODUCTS.find(p => p.id === it.id);
+      return p.name + (it.qty > 1 ? '×' + it.qty : '');
+    }).join('・');
+    return `<div class="set-info-row">
+      <span class="set-info-name">${s.name}</span>
+      <span class="set-info-contents">${contents}</span>
+      <span class="set-info-price">¥${s.setPrice.toLocaleString()}</span>
+      <span class="set-info-disc">（−¥${s.discount}）</span>
+    </div>`;
+  }).join('');
+}
+
+// ===== 純関数: セット自動計算 =====
+function computeSets(rawOrder) {
+  const pool = rawOrder.map(i => ({ ...i }));
+  const appliedSets = [];
+
+  for (const set of SETS) {
+    const tmp = pool.map(i => ({ ...i }));
+    let ok = true;
+    const consumed = [];
+
+    for (const req of set.items) {
+      const item = tmp.find(p => p.id === req.id);
+      if (!item || item.qty < req.qty) { ok = false; break; }
+      consumed.push({ id: item.id, name: item.name, price: item.price, qty: req.qty });
+      item.qty -= req.qty;
+    }
+
+    if (ok) {
+      for (const req of set.items) {
+        pool.find(p => p.id === req.id).qty -= req.qty;
+      }
+      appliedSets.push({ ...set, consumed });
+    }
+  }
+
+  const remaining     = pool.filter(p => p.qty > 0);
+  const setTotal      = appliedSets.reduce((s, a) => s + a.setPrice, 0);
+  const remTotal      = remaining.reduce((s, r) => s + r.price * r.qty, 0);
+  const totalDiscount = appliedSets.reduce((s, a) => s + a.discount, 0);
+  const finalTotal    = setTotal + remTotal;
+
+  return { appliedSets, remaining, totalDiscount, finalTotal };
+}
+
+// ===== 注文操作 =====
+function addToOrder(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  const existing = order.find(x => x.id === id);
+  if (existing) existing.qty++;
+  else order.push({ ...p, qty: 1 });
+  renderOrder();
+}
+
+function changeQty(id, delta) {
+  const item = order.find(x => x.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) order = order.filter(x => x.id !== id);
+  renderOrder();
+}
+
+function clearOrder() {
+  order = [];
+  receivedAmount = 0;
+  receivedStr = '';
+  document.getElementById('received-disp').textContent = '—';
+  document.getElementById('change-disp').style.display = 'none';
+  document.getElementById('recite-box').style.display = 'none';
+  renderOrder();
+}
+
+// ===== 注文表示（セット自動反映）=====
+function renderOrder() {
+  const body = document.getElementById('order-body');
+  const discountRow = document.getElementById('discount-row');
+
+  if (order.length === 0) {
+    body.innerHTML = '<div class="empty">商品をタップして追加してください</div>';
+    discountRow.style.display = 'none';
+    document.getElementById('total-disp').textContent = '¥0';
+    document.getElementById('amount-disp').textContent = '¥0';
+    document.getElementById('recite-box').style.display = 'none';
+    calcChange();
+    return;
+  }
+
+  const { appliedSets, remaining, totalDiscount, finalTotal } = computeSets(order);
+  let html = '';
+
+  if (appliedSets.length > 0) {
+    html += '<div class="sec-label">適用済みセット</div>';
+    html += appliedSets.map(s => {
+      const detail = s.consumed.map(c => c.name + (c.qty > 1 ? '×' + c.qty : '')).join('・');
+      return `<div class="applied-row">
+        <span class="check-icon">✓</span>
+        <div class="applied-info">
+          <div class="applied-name">${s.name} ×1</div>
+          <div class="applied-detail">${detail}</div>
+          <div class="applied-saving">−¥${s.discount} 割引適用中</div>
+        </div>
+        <span class="applied-price">¥${s.setPrice.toLocaleString()}</span>
+      </div>`;
+    }).join('');
+  }
+
+  if (remaining.length > 0) {
+    html += '<div class="sec-label">残り単品</div>';
+    html += remaining.map(r => `
+      <div class="order-row">
+        <span class="order-name">${r.name}</span>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(${r.id},-1)">−</button>
+          <span class="qty-num">${r.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${r.id},1)">＋</button>
+        </div>
+        <span class="order-price">¥${(r.price * r.qty).toLocaleString()}</span>
+      </div>`).join('');
+  }
+
+  body.innerHTML = html;
+
+  discountRow.style.display = totalDiscount > 0 ? 'flex' : 'none';
+  document.getElementById('discount-val').textContent = '−¥' + totalDiscount.toLocaleString();
+  document.getElementById('total-disp').textContent   = '¥' + finalTotal.toLocaleString();
+  document.getElementById('amount-disp').textContent  = '¥' + finalTotal.toLocaleString();
+
+  renderRecite(appliedSets, remaining, finalTotal);
+  calcChange();
+}
+
+// ===== 復唱補助 =====
+function renderRecite(appliedSets, remaining, total) {
+  const box = document.getElementById('recite-box');
+  const el  = document.getElementById('recite-text');
+  const parts = [];
+
+  appliedSets.forEach(s => parts.push(s.name + '1つ'));
+
+  if (remaining.length > 0) {
+    const remParts = remaining.map(r => r.name + (r.qty > 1 ? r.qty + '個' : '1つ'));
+    if (appliedSets.length > 0) {
+      parts.push('残り' + remParts.join('、'));
+    } else {
+      parts.push(...remParts);
+    }
+  }
+
+  parts.push('合計' + total.toLocaleString() + '円です');
+  el.textContent = parts.join('、') + '。';
+  box.style.display = 'block';
+}
+
+// ===== 電卓キーパッド =====
+function keypadPress(key) {
+  if (key === 'del') {
+    receivedStr = receivedStr.slice(0, -1);
+  } else if (key === '00') {
+    if (receivedStr.length > 0) receivedStr += '00';
+  } else {
+    if (receivedStr.length >= 6) return;
+    receivedStr += key;
+  }
+  receivedAmount = parseInt(receivedStr) || 0;
+  document.getElementById('received-disp').textContent =
+    receivedAmount > 0 ? '¥' + receivedAmount.toLocaleString() : '—';
+  calcChange();
+}
+
+function setReceived(amount) {
+  receivedAmount = amount;
+  receivedStr = String(amount);
+  document.getElementById('received-disp').textContent = '¥' + amount.toLocaleString();
+  calcChange();
+}
+
+// ===== お釣り =====
+function calcChange() {
+  const { finalTotal } = order.length > 0 ? computeSets(order) : { finalTotal: 0 };
+  const changeBox = document.getElementById('change-disp');
+  if (receivedAmount > 0 && finalTotal > 0) {
+    const change = receivedAmount - finalTotal;
+    document.getElementById('change-val').textContent =
+      (change >= 0 ? '¥' : '−¥') + Math.abs(change).toLocaleString();
+    changeBox.style.display = 'block';
+    changeBox.style.borderColor = change >= 0 ? '#86EFAC' : '#FCA5A5';
+    changeBox.style.background  = change >= 0 ? '#F0FDF4' : '#FEF2F2';
+    document.getElementById('change-val').style.color = change >= 0 ? 'var(--ok)' : 'var(--danger)';
+  } else {
+    changeBox.style.display = 'none';
+  }
+}
+
+// ===== 会計確定 =====
+function confirmOrder() {
+  if (order.length === 0) { alert('注文がありません'); return; }
+  const { appliedSets, remaining, totalDiscount, finalTotal } = computeSets(order);
+  const received = receivedAmount;
+  if (received > 0 && received < finalTotal) { alert('お預かり金額が合計より少ないです'); return; }
+
+  const record = {
+    id: Date.now(),
+    date: new Date().toLocaleString('ja-JP'),
+    appliedSets: appliedSets.map(s => ({
+      id: s.id, name: s.name, setPrice: s.setPrice,
+      discount: s.discount, consumed: s.consumed,
+    })),
+    remaining: remaining.map(r => ({ id: r.id, name: r.name, qty: r.qty, price: r.price })),
+    total: finalTotal,
+    totalDiscount,
+    received,
+    change: received > 0 ? received - finalTotal : 0,
+  };
+  history.unshift(record);
+  localStorage.setItem('kc_history', JSON.stringify(history));
+  clearOrder();
+  renderHistory();
+  switchTab('history');
+}
+
+// ===== 履歴・集計 =====
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if (history.length === 0) {
+    list.innerHTML = '<div class="empty">会計履歴はありません</div>';
+  } else {
+    list.innerHTML = history.map(h => {
+      const setsStr = (h.appliedSets && h.appliedSets.length > 0)
+        ? h.appliedSets.map(s => s.name).join('・') : '';
+      const remStr  = (h.remaining && h.remaining.length > 0)
+        ? h.remaining.map(r => r.name + '×' + r.qty).join('・') : '';
+      return `<div class="history-item">
+        <div class="history-head">
+          <span>${h.date}</span>
+          <span>${h.received > 0 ? 'お預かり ¥' + h.received.toLocaleString() : ''}</span>
+        </div>
+        ${setsStr ? `<div class="history-sets">${setsStr}</div>` : ''}
+        ${remStr  ? `<div class="history-remaining">単品：${remStr}</div>` : ''}
+        <div class="history-foot">
+          ${h.totalDiscount > 0 ? `<span class="history-disc">割引 −¥${h.totalDiscount}</span>` : ''}
+          <span class="history-total">¥${h.total.toLocaleString()}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('today-count').textContent    = history.length + '件';
+  document.getElementById('today-total').textContent    = '¥' + history.reduce((s,h)=>s+h.total,0).toLocaleString();
+  document.getElementById('today-discount').textContent = '−¥' + history.reduce((s,h)=>s+(h.totalDiscount||0),0).toLocaleString();
+
+  // セット適用回数
+  const setCounts = {};
+  SETS.forEach(s => { setCounts[s.id] = { name: s.name, count: 0 }; });
+  history.forEach(h => {
+    (h.appliedSets || []).forEach(s => { if (setCounts[s.id]) setCounts[s.id].count++; });
+  });
+  const setArr = Object.values(setCounts).sort((a,b) => b.count - a.count);
+  document.getElementById('set-ranking').innerHTML = setArr.some(s => s.count > 0)
+    ? '<div class="rank-list">' + setArr.map((s,i) =>
+        `<div class="rank-item"><span class="rank-num">${i+1}</span><span class="rank-name">${s.name}</span><span class="rank-count">${s.count}回</span></div>`
+      ).join('') + '</div>'
+    : '<div class="empty">会計履歴がありません</div>';
+
+  // 商品ランキング
+  const prodCounts = {};
+  PRODUCTS.forEach(p => { prodCounts[p.id] = { name: p.name, count: 0 }; });
+  history.forEach(h => {
+    (h.appliedSets || []).forEach(s => {
+      (s.consumed || []).forEach(c => { if (prodCounts[c.id]) prodCounts[c.id].count += c.qty; });
+    });
+    (h.remaining || []).forEach(r => { if (prodCounts[r.id]) prodCounts[r.id].count += r.qty; });
+  });
+  const prodArr = Object.values(prodCounts).sort((a,b) => b.count - a.count).filter(p => p.count > 0);
+  document.getElementById('product-ranking').innerHTML = prodArr.length > 0
+    ? '<div class="rank-list">' + prodArr.map((p,i) =>
+        `<div class="rank-item"><span class="rank-num">${i+1}</span><span class="rank-name">${p.name}</span><span class="rank-count">${p.count}個</span></div>`
+      ).join('') + '</div>'
+    : '<div class="empty">会計履歴がありません</div>';
+}
+
+function clearHistory() {
+  if (!confirm('履歴を全て消去しますか？')) return;
+  history = [];
+  localStorage.setItem('kc_history', '[]');
+  renderHistory();
+}
+
+// ===== 月次管理 =====
+function renderMonthlyTable() {
+  const table = document.getElementById('monthly-table');
+  const heads = ['商品名','販売価格','原価','期首在庫','仕入数','廃棄数','販売数','消化率','売上','売上原価','粗利'];
+  table.innerHTML = `<tr>${heads.map(h => `<th>${h}</th>`).join('')}</tr>`;
+  PRODUCTS.forEach(p => {
+    const d      = monthlyData[p.id] || { open:0, buy:0, waste:0 };
+    const sold   = Math.max(0, d.open + d.buy - d.waste - (d.close || 0));
+    const rate   = (d.open + d.buy) > 0 ? Math.round(sold / (d.open + d.buy) * 100) : 0;
+    const rev    = sold * p.price;
+    const cogs   = sold * (costs[p.id] || p.cost);
+    const profit = rev - cogs;
+    table.innerHTML += `<tr>
+      <td style="text-align:left;font-size:12px">${p.name}</td>
+      <td>¥${p.price}</td><td>¥${costs[p.id]||p.cost}</td>
+      <td><input type="number" value="${d.open}"  onchange="updateMonthly(${p.id},'open',this.value)"  min="0"/></td>
+      <td><input type="number" value="${d.buy}"   onchange="updateMonthly(${p.id},'buy',this.value)"   min="0"/></td>
+      <td><input type="number" value="${d.waste}" onchange="updateMonthly(${p.id},'waste',this.value)" min="0"/></td>
+      <td class="result">${sold}</td><td class="result">${rate}%</td>
+      <td class="result">¥${rev.toLocaleString()}</td>
+      <td class="result">¥${cogs.toLocaleString()}</td>
+      <td class="result ${profit>=0?'profit':'loss'}">¥${profit.toLocaleString()}</td>
+    </tr>`;
+  });
+  renderMonthlySummary();
+}
+
+function updateMonthly(id, field, val) {
+  if (!monthlyData[id]) monthlyData[id] = { open:0, buy:0, waste:0 };
+  monthlyData[id][field] = parseInt(val) || 0;
+  renderMonthlyTable();
+}
+
+function renderMonthlySummary() {
+  let totalRev=0, totalCogs=0;
+  PRODUCTS.forEach(p => {
+    const d    = monthlyData[p.id] || { open:0, buy:0, waste:0 };
+    const sold = Math.max(0, d.open + d.buy - d.waste);
+    totalRev  += sold * p.price;
+    totalCogs += sold * (costs[p.id] || p.cost);
+  });
+  const profit = totalRev - totalCogs;
+  document.getElementById('monthly-summary').innerHTML = `
+    <div class="total-row"><span class="total-label">売上合計</span><span style="font-weight:700">¥${totalRev.toLocaleString()}</span></div>
+    <div class="total-row"><span class="total-label">売上原価</span><span style="font-weight:700">¥${totalCogs.toLocaleString()}</span></div>
+    <div class="total-row"><span class="total-label">粗利</span><span style="font-weight:700;color:${profit>=0?'var(--ok)':'var(--danger)'}">¥${profit.toLocaleString()}</span></div>`;
+}
+
+function loadSampleMonthly() {
+  PRODUCTS.forEach(p => {
+    monthlyData[p.id] = {
+      open:  Math.floor(Math.random()*20+5),
+      buy:   Math.floor(Math.random()*50+20),
+      waste: Math.floor(Math.random()*5),
+    };
+  });
+  renderMonthlyTable();
+}
+
+function exportMonthlyCSV() {
+  const rows = [['商品名','販売価格','原価','期首','仕入','廃棄','販売数','売上','粗利']];
+  PRODUCTS.forEach(p => {
+    const d      = monthlyData[p.id] || { open:0, buy:0, waste:0 };
+    const sold   = Math.max(0, d.open + d.buy - d.waste);
+    const rev    = sold * p.price;
+    const profit = rev - sold * (costs[p.id] || p.cost);
+    rows.push([p.name, p.price, costs[p.id]||p.cost, d.open, d.buy, d.waste, sold, rev, profit]);
+  });
+  const csv  = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob(['﻿'+csv], { type:'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '月次集計.csv';
+  a.click();
+}
+
+// ===== 原価設定 =====
+function renderCostGrid() {
+  document.getElementById('cost-grid').innerHTML = PRODUCTS.map(p => `
+    <div class="cost-item">
+      <span class="cost-name">${p.name}</span>
+      <input class="cost-input" type="number" id="cost-${p.id}" value="${costs[p.id]??p.cost}" min="0"/>
+    </div>`).join('');
+}
+
+function saveCosts() {
+  PRODUCTS.forEach(p => {
+    costs[p.id] = parseInt(document.getElementById('cost-'+p.id).value) || 0;
+  });
+  localStorage.setItem('kc_costs', JSON.stringify(costs));
+  renderMonthlyTable();
+  alert('原価を保存しました');
+}
+
+// ===== GAS連携 =====
+function saveGasUrl() {
+  localStorage.setItem('kc_gas_url', document.getElementById('gas-url').value.trim());
+  showStatus('URLを保存しました', 'ok');
+}
+
+async function sendHistoryToSheet() {
+  const url = localStorage.getItem('kc_gas_url');
+  if (!url) { showStatus('GAS URLを先に設定してください', 'err'); return; }
+  if (history.length === 0) { showStatus('会計履歴がありません', 'err'); return; }
+  showStatus('送信中...', 'ok');
+  try {
+    await fetch(url, { method:'POST', mode:'no-cors', body: JSON.stringify({ type:'history', data:history }) });
+    showStatus('送信しました ✓ スプレッドシートを確認してください', 'ok');
+  } catch(e) { showStatus('送信エラー: '+e.message, 'err'); }
+}
+
+async function sendMonthlyToSheet() {
+  const url = localStorage.getItem('kc_gas_url');
+  if (!url) { showStatus('GAS URLを先に設定してください', 'err'); return; }
+  const data = PRODUCTS.map(p => {
+    const d    = monthlyData[p.id] || { open:0, buy:0, waste:0 };
+    const sold = Math.max(0, d.open + d.buy - d.waste);
+    return { name:p.name, price:p.price, cost:costs[p.id]||p.cost, ...d, sold,
+             revenue:sold*p.price, profit:sold*p.price-sold*(costs[p.id]||p.cost) };
+  });
+  showStatus('送信中...', 'ok');
+  try {
+    await fetch(url, { method:'POST', mode:'no-cors', body: JSON.stringify({ type:'monthly', data }) });
+    showStatus('送信しました ✓', 'ok');
+  } catch(e) { showStatus('送信エラー: '+e.message, 'err'); }
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('gas-status');
+  el.textContent = msg;
+  el.className = 'status-msg status-' + type;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+// ===== タブ切り替え =====
+function switchTab(name) {
+  const names = ['order','history','monthly','settings'];
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', names[i]===name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+init();
+</script>
 </body>
 </html>
